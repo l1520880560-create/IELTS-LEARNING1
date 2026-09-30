@@ -1,5 +1,13 @@
 # IELTS Listening Workbook · 雅思听力练习册（公派留学 / 访学备考）
 
+> ## 🌐 在线访问
+>
+> **https://l1520880560-create.github.io/ielts-learning/**
+>
+> 打开后从首页选择模块：**📖 听力高频词串学** · **🎧 短文听写** · **💬 对话填词** · **🎤 访谈讲座**
+>
+> （需在仓库 Settings → Pages 中启用 GitHub Pages 后生效）
+
 一套面向 **A2 水平**学习者的雅思听力模拟练习册：**15 篇原创练习**（5 篇短文听写 Spot Dictation + 5 篇对话填词 Conversation + 5 篇访谈讲座 Interview & Lecture），全部文本由母语级英语编写，场景与剑桥雅思真题一致（住宿、图书馆、旅行、学术、地理、银行、餐饮、求职、娱乐、问路、动物、商业、科研、城市、健康）。
 
 ## 这套练习册有什么
@@ -23,6 +31,8 @@
 
 | 文件 | 用途 |
 |---|---|
+| `index.html` | 网站首页（模块导航，从此进入各练习） |
+| `vocab_study.html` | 听力高频词串学模块（644 高频 + 350 答案词） |
 | `spot_dictation.html` | 短文听写篇（No.1–5），每篇开头有对应音频 |
 | `dialogues.html` | 对话填词篇（No.6–10），男女双声对话 |
 | `lectures.html` | 访谈讲座篇（No.11–15），T/F + 问答 |

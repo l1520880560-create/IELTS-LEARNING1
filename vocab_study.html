@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>听力高频词串学 · 雅思听力练习册</title>
+<title>高频词串听 · 雅思听力专项</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background: #f7f9fc; color: #222; padding: 24px 16px; }
@@ -48,11 +48,11 @@ h1 { font-size: 22px; color: #1F4E79; }
 <body>
 <div class="wrap">
 <a class="back" href="index.html">← 返回首页</a>
-<h1>📖 听力高频词串学</h1>
-<div class="sub">全册正文 100% 覆盖：<b style="color:#C00000">644 个雅思听力高频词</b> + <b style="color:#1F4E79">350 个剑桥雅思基础答案词</b>。<br>选择篇目 → 点击任意词查看音标与释义；点「串学」自动逐个朗读，边听边跟读。</div>
+<h1>🔊 高频词串听</h1>
+<div class="sub">全册正文 100% 覆盖：<b style="color:#C00000">644 个雅思听力高频词</b> + <b style="color:#1F4E79">350 个剑桥雅思基础答案词</b>。<br>选择篇目 → 点击任意词查看音标与释义；点「串听」自动逐个朗读，边听边跟读。</div>
 <div class="controls">
   <input type="text" class="search" id="search" placeholder="🔍 搜索词汇…">
-  <button class="speak-btn" id="speakAll">▶ 串学本页词汇</button>
+  <button class="speak-btn" id="speakAll">▶ 串听本页词汇</button>
   <div class="legend"><span><span class="dot red"></span>高频词</span><span><span class="dot blue"></span>基础答案词</span></div>
 </div>
 <div class="tabs" id="tabs"><button class="tab active" data-piece="p01">No.1</button><button class="tab" data-piece="p02">No.2</button><button class="tab" data-piece="p03">No.3</button><button class="tab" data-piece="p04">No.4</button><button class="tab" data-piece="p05">No.5</button><button class="tab" data-piece="p06">No.6</button><button class="tab" data-piece="p07">No.7</button><button class="tab" data-piece="p08">No.8</button><button class="tab" data-piece="p09">No.9</button><button class="tab" data-piece="p10">No.10</button><button class="tab" data-piece="p11">No.11</button><button class="tab" data-piece="p12">No.12</button><button class="tab" data-piece="p13">No.13</button><button class="tab" data-piece="p14">No.14</button><button class="tab" data-piece="p15">No.15</button></div>
@@ -119,7 +119,7 @@ function startSpeak() {
   const chips = [...panel.querySelectorAll(".chip:not(.hidden)")];
   if (!chips.length) return;
   if (!("speechSynthesis" in window)) { alert("当前浏览器不支持语音朗读"); return; }
-  speaking = true; btn.textContent = "⏹ 停止串学"; btn.classList.add("stop");
+  speaking = true; btn.textContent = "⏹ 停止串听"; btn.classList.add("stop");
   let i = 0;
   const step = () => {
     if (!speaking) return;
@@ -137,7 +137,7 @@ function stopSpeak() {
   if (timer) clearTimeout(timer);
   if ("speechSynthesis" in window) speechSynthesis.cancel();
   document.querySelectorAll(".chip.playing").forEach(c => c.classList.remove("playing"));
-  btn.textContent = "▶ 串学本页词汇"; btn.classList.remove("stop");
+  btn.textContent = "▶ 串听本页词汇"; btn.classList.remove("stop");
 }
 document.addEventListener("keydown", e => { if (e.key === "Escape") closePop(); });
 </script>
