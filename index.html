@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的 IELTS 备考中心</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background: #fbfcfe; color: #1a1a1a; min-height: 100vh; padding: 46px 20px 60px; }
+.wrap { max-width: 920px; margin: 0 auto; }
+.tagline { text-align: center; font-family: "Segoe Script", "Comic Sans MS", "Bradley Hand", cursive; font-size: 30px; color: #222; letter-spacing: .5px; margin-bottom: 16px; line-height: 1.5; opacity: 0; transition: opacity 1.2s ease; }
+.tagline.show { opacity: 1; }
+.tagline .ielts { color: #C00000; font-weight: 700; }
+.marauder { text-align: center; font-family: "Segoe Script", "Comic Sans MS", cursive; font-size: 24px; color: #7a5c2e; letter-spacing: 1.5px; opacity: 0; filter: blur(8px); transition: opacity .9s ease, filter .9s ease; margin-bottom: 20px; }
+.marauder.ink { opacity: 1; filter: blur(0); }
+.marauder.gone { opacity: 0; filter: blur(4px); transition: opacity 1.9s ease .1s, filter 1.9s ease .1s; }
+.content { opacity: 0; transform: translateY(12px); transition: opacity 1.1s ease, transform 1.1s ease; }
+.content.show { opacity: 1; transform: none; }
+.title { font-size: 25px; font-weight: 600; text-align: center; letter-spacing: 1px; margin-bottom: 8px; }
+.sub { text-align: center; color: #666; font-size: 13.5px; margin-bottom: 40px; line-height: 1.9; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+.card { background: #fff; border: 1px solid #e8ecf2; border-radius: 14px; padding: 26px 22px 22px; text-decoration: none; color: inherit; box-shadow: 0 1px 4px rgba(20,40,80,.05); opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease, box-shadow .14s; display: block; }
+.content.show .card { opacity: 1; transform: none; }
+.content.show .card:nth-child(1) { transition-delay: .15s; }
+.content.show .card:nth-child(2) { transition-delay: .30s; }
+.content.show .card:nth-child(3) { transition-delay: .45s; }
+.content.show .card:nth-child(4) { transition-delay: .60s; }
+.card:hover { transform: translateY(-3px); box-shadow: 0 8px 22px rgba(20,40,80,.10); }
+.card .icon { font-size: 30px; margin-bottom: 10px; }
+.card h2 { font-size: 16.5px; font-weight: 700; margin-bottom: 4px; }
+.card .en { font-size: 11.5px; color: #999; margin-bottom: 10px; }
+.card p { font-size: 12.5px; color: #555; line-height: 1.7; }
+.card .go { display: inline-block; margin-top: 12px; font-size: 12px; color: #C00000; font-weight: 600; }
+.card.soon { cursor: default; }
+.content.show .card.soon { opacity: .55; }
+.card.soon:hover { transform: none; box-shadow: 0 1px 4px rgba(20,40,80,.05); }
+.card .soon-tag { display: inline-block; margin-top: 12px; font-size: 11px; color: #999; border: 1px solid #d8dee8; border-radius: 12px; padding: 3px 10px; }
+.foot { margin-top: 46px; text-align: center; font-size: 12px; color: #aaa; line-height: 2; border-top: 1px solid #eef1f6; padding-top: 18px; }
+.foot b { color: #C00000; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="tagline" id="tagline">Bewitched by <span class="ielts">IELTS</span>, body and soul.</div>
+  <div class="marauder" id="marauder">You solemnly swear that you are up to no good.</div>
+  <div class="content" id="content">
+  <div class="title">我的 IELTS 备考中心</div>
+  <div class="sub">一站式雅思四科备考：阅读 · 听力 · 口语 · 写作<br>听力专项已上线：高频词串听（644 高频 + 350 答案词）· 王陆语料库听写 · 数字复习<br>其余模块持续建设中。</div>
+  <div class="grid">
+    <a class="card" href="listening.html">
+      <div class="icon">🎧</div>
+      <h2>听力</h2>
+      <div class="en">Listening</div>
+      <p>高频词串听 · 王陆语料库 · 数字复习 · 15 篇真题风格练习。</p>
+      <span class="go">进入专项 →</span>
+    </a>
+    <a class="card soon" href="javascript:void(0)">
+      <div class="icon">📖</div>
+      <h2>阅读</h2>
+      <div class="en">Reading</div>
+      <p>雅思阅读真题精读与词汇积累，即将上线。</p>
+      <span class="soon-tag">即将上线</span>
+    </a>
+    <a class="card soon" href="javascript:void(0)">
+      <div class="icon">✍️</div>
+      <h2>写作</h2>
+      <div class="en">Writing</div>
+      <p>大小作文范文与批改思路，即将上线。</p>
+      <span class="soon-tag">即将上线</span>
+    </a>
+    <a class="card soon" href="javascript:void(0)">
+      <div class="icon">🗣️</div>
+      <h2>口语</h2>
+      <div class="en">Speaking</div>
+      <p>雅思口语话题库与地道表达练习，即将上线。</p>
+      <span class="soon-tag">即将上线</span>
+    </a>
+  </div>
+  <div class="foot">
+    听力专项词汇覆盖核验：<b>高频词 644/644</b> · <b>基础答案词 350/350</b><br>
+    音频：美音 · 多音色 · 情绪自然 · 语速适中（A2 友好），对话篇男女双声<br>
+    更多模块持续添加中 · Made for IELTS / 公派留学 / 访学英语备考学习者 · 仅供教育学习
+  </div>
+  </div>
+</div>
+<script>
+// 活点地图时间线：标语淡入 -> 咒语浮现 -> 消失 -> 四大模块展开
+setTimeout(function(){ document.getElementById('tagline').classList.add('show'); }, 400);
+setTimeout(function(){ document.getElementById('marauder').classList.add('ink'); }, 1500);
+setTimeout(function(){ document.getElementById('marauder').classList.add('gone'); }, 5600);
+setTimeout(function(){ document.getElementById('content').classList.add('show'); }, 7600);
+</script>
+</body>
+</html>

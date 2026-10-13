@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数字复习 · Numbers</title>
+<style>
+  :root{
+    --ink:#2c3e50; --sub:#7f8c8d; --line:#e8eaed; --card:#fff;
+    --accent:#1f6feb; --ok:#1a9d5d; --err:#d64541; --bg:#f6f8fa;
+    --shadow:0 2px 10px rgba(31,111,235,.08);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:"Segoe UI","PingFang SC","Microsoft YaHei",system-ui,sans-serif; line-height:1.6; padding:22px 16px 80px;}
+  .wrap{max-width:960px; margin:0 auto;}
+  a{color:var(--accent); text-decoration:none;}
+  .crumb{font-size:13px; color:var(--sub); margin-bottom:14px; display:flex; gap:6px; align-items:center; flex-wrap:wrap;}
+  .crumb a{cursor:pointer;}
+  .crumb .sep{color:#c3c9d1;}
+  h1.main{font-size:26px; margin-bottom:4px;}
+  p.sub{color:var(--sub); font-size:14px; margin-bottom:20px;}
+
+  /* 模块卡（首页） */
+  .mods{display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px;}
+  .mod{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px 18px; cursor:pointer; transition:all .15s; box-shadow:var(--shadow);}
+  .mod:hover{transform:translateY(-2px); border-color:var(--accent);}
+  .mod .ico{font-size:26px; margin-bottom:10px;}
+  .mod h3{font-size:16px; margin-bottom:4px;}
+  .mod p{font-size:12.5px; color:var(--sub);}
+  .mod .num{font-size:12px; color:var(--accent); margin-top:8px; font-weight:600;}
+
+  /* 类型方块 */
+  .tiles{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px;}
+  .tile{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px 12px; text-align:center; cursor:pointer; transition:all .15s;}
+  .tile:hover{transform:translateY(-2px); border-color:var(--accent);}
+  .tile h4{font-size:15px; margin-bottom:3px;}
+  .tile span{font-size:12px; color:var(--sub);}
+  .tile .badge{display:inline-block; margin-top:8px; font-size:11px; color:var(--accent); background:#eef3fc; padding:2px 8px; border-radius:999px;}
+
+  /* 规则卡 */
+  .rcards{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px;}
+  .rcard{background:var(--card); border:1px solid var(--line); border-radius:12px; cursor:pointer; overflow:hidden; transition:all .15s;}
+  .rcard .head{display:flex; align-items:center; justify-content:space-between; padding:14px 16px;}
+  .rcard .head h4{font-size:15px;}
+  .rcard .head .tag{font-size:11px; background:#eef3fc; color:var(--accent); padding:2px 8px; border-radius:999px; font-weight:600;}
+  .rcard .head .arr{color:var(--sub); transition:transform .2s;}
+  .rcard.open .head .arr{transform:rotate(90deg);}
+  .rcard .body{display:none; padding:0 16px 14px; border-top:1px dashed var(--line);}
+  .rcard.open .body{display:block;}
+  .rcard .body ul{list-style:none; margin-top:10px;}
+  .rcard .body li{font-size:13px; padding:5px 0; border-bottom:1px dashed var(--line);}
+  .rcard .body li:last-child{border-bottom:none;}
+  .rcard .src{font-size:11px; color:var(--sub);}
+  .rcard .src b{color:var(--accent);}
+  .rcard .samples{margin-top:10px; display:flex; flex-direction:column; gap:6px;}
+  .rcard .srow{display:flex; align-items:center; gap:10px; font-size:14px;}
+  .rcard .tips{margin-top:12px; background:#fff8e6; border-left:3px solid #f0b429; padding:8px 10px; font-size:13px; border-radius:0 8px 8px 0;}
+
+  .btn{display:inline-flex; align-items:center; justify-content:center; border:none; cursor:pointer; border-radius:8px; font-size:13px; font-family:inherit;}
+  .btn.play{background:#eef3fc; color:var(--accent); width:32px; height:32px; border-radius:50%; font-size:15px;}
+  .btn.play:hover{background:#dbe7fb;}
+  .btn.big{width:58px; height:58px; border-radius:50%; background:#eef3fc; color:var(--accent); font-size:24px; margin:0 auto 14px;}
+  .btn.big:hover{background:#dbe7fb;}
+  .btn.ghost{background:#fff; border:1px solid var(--line); color:var(--ink); padding:8px 16px; font-size:13px;}
+  .btn.ghost:hover{border-color:var(--accent); color:var(--accent);}
+  .btn.primary{background:var(--accent); color:#fff; padding:9px 20px; font-size:14px;}
+  .btn.primary:hover{filter:brightness(1.06);}
+
+  /* 机打页 */
+  .typecard{background:var(--card); border:1px solid var(--line); border-radius:16px; max-width:620px; margin:10px auto; padding:36px 28px 30px; text-align:center; box-shadow:var(--shadow);}
+  .typecard .kind{font-size:13px; color:var(--sub); margin-bottom:6px;}
+  .typecard .listen-tip{font-size:14px; color:var(--sub); margin-bottom:18px;}
+  .typecard .reveal{font-size:15px; color:var(--ink); margin:16px 0; min-height:24px;}
+  .typecard .answer-in{width:100%; max-width:340px; text-align:center; font-size:30px; letter-spacing:2px; padding:12px 10px; border:2px solid var(--line); border-radius:12px; outline:none; font-family:inherit;}
+  .typecard .answer-in:focus{border-color:var(--accent);}
+  .typecard .answer-in.ok{border-color:var(--ok); background:#f0faf4;}
+  .typecard .answer-in.no{border-color:var(--err); background:#fdf3f2;}
+  .typecard .hint{font-size:12.5px; color:var(--sub); margin-top:14px;}
+  .typecard .hint b{color:var(--accent);}
+  .progbar{height:6px; background:#e8eaed; border-radius:3px; margin-bottom:18px; overflow:hidden;}
+  .progbar i{display:block; height:100%; background:var(--accent); border-radius:3px; transition:width .25s;}
+  .stat{font-size:13px; color:var(--sub); display:flex; justify-content:space-between; margin-bottom:8px;}
+  .result{text-align:center; padding:20px 0;}
+  .result .big{font-size:46px; font-weight:700; color:var(--accent);}
+  .result .cap{font-size:14px; color:var(--sub); margin:6px 0 18px;}
+  .rlist{max-width:620px; margin:14px auto; text-align:left;}
+  .rlist .rq{display:flex; align-items:center; gap:10px; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 14px; margin-bottom:8px; font-size:14px;}
+  .rlist .rq .ok{color:var(--ok); font-weight:700;}
+  .rlist .rq .no{color:var(--err); font-weight:700;}
+  .rlist .rq .ans{color:var(--sub); font-size:12.5px;}
+
+  /* 句子页 */
+  .sentcard{background:var(--card); border:1px solid var(--line); border-radius:16px; max-width:680px; margin:10px auto; padding:30px 26px 26px; text-align:center; box-shadow:var(--shadow);}
+  .sentcard .scene{font-size:12.5px; color:var(--sub); margin-bottom:8px;}
+  .sentcard .sent-text{font-size:19px; line-height:2; margin:14px 0;}
+  .sentcard .blank-in{display:inline-block; text-align:center; font-size:17px; width:110px; margin:0 4px; border:none; border-bottom:2px solid var(--accent); background:transparent; outline:none; font-family:inherit; color:var(--ink);}
+  .sentcard .blank-in.ok{color:var(--ok); border-color:var(--ok);}
+  .sentcard .blank-in.no{color:var(--err); border-color:var(--err);}
+  .sentcard .blank-in:disabled{opacity:.9;}
+
+  /* 对话页 */
+  .dlgcard{background:var(--card); border:1px solid var(--line); border-radius:16px; max-width:680px; margin:10px auto; padding:28px 26px; box-shadow:var(--shadow);}
+  .dlgcard h4{font-size:17px; margin-bottom:4px;}
+  .dlgcard .scene{font-size:13px; color:var(--sub); margin-bottom:14px;}
+  .dlgcard .line{display:flex; align-items:center; gap:12px; margin-bottom:10px;}
+  .dlgcard .who{font-size:12px; color:var(--sub); width:58px; flex:none;}
+  .dlgcard .blank-in{width:150px; border:none; border-bottom:2px solid var(--accent); background:transparent; text-align:center; font-size:16px; outline:none; font-family:inherit; padding:4px;}
+  .dlgcard .blank-in.ok{color:var(--ok); border-color:var(--ok);}
+  .dlgcard .blank-in.no{color:var(--err); border-color:var(--err);}
+  .dlgcard .fb{font-size:12.5px; color:var(--sub);}
+
+  .errs{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px; max-width:680px; margin:0 auto;}
+  .errs .empty{color:var(--sub); font-size:14px; text-align:center;}
+  .errs .e{display:flex; align-items:center; gap:12px; padding:9px 0; border-bottom:1px dashed var(--line); font-size:14px; flex-wrap:wrap;}
+  .errs .e:last-child{border-bottom:none;}
+  .errs .e .ans{color:var(--ok); font-weight:600;}
+  .errs .e .bad{color:var(--err);}
+  footer{color:var(--sub); font-size:12px; margin-top:44px; text-align:center;}
+  .hidden{display:none!important;}
+/* 剑桥笔记填空版式 */
+.notepad{background:#fff;border:1.5px solid #d8dee9;border-radius:10px;padding:16px 18px}
+.prompt{color:#5b6b7f;font-style:italic;font-size:13.5px;margin:2px 0 12px}
+.example{background:#f2f7ff;border-left:3px solid #4a7dd6;padding:8px 12px;border-radius:6px;margin-bottom:12px;font-size:15px;color:#43536b}
+.example .exlbl{display:inline-block;background:#4a7dd6;color:#fff;font-size:11px;border-radius:4px;padding:1px 7px;margin-right:8px;vertical-align:1px}
+.ghead{font-weight:600;color:#4a7dd6;font-size:13.5px;margin:14px 0 8px;padding-bottom:4px;border-bottom:1px dashed #d8dee9}
+.crow{display:flex;align-items:center;gap:6px;margin:9px 0;font-size:15.5px;color:#26323f;flex-wrap:wrap}
+.crow .blank-in{width:110px;font-size:15.5px;padding:6px 9px;border:1.5px solid #b8c4d4;border-radius:6px;text-align:center}
+.scene{color:#8a97a8;font-size:12.5px;margin-left:10px}
+/* 播放条浮层 */
+#playbar{position:fixed;left:0;right:0;bottom:0;background:#1e2a3a;z-index:999;box-shadow:0 -4px 18px rgba(0,0,0,.18);padding:10px 16px}
+#playbar .pbinner{display:flex;align-items:center;gap:10px;max-width:980px;margin:0 auto}
+#playbar .pbname{color:#9fb2c8;font-size:12px;min-width:70px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#playbar input[type=range]{flex:1;accent-color:#4a7dd6;cursor:pointer}
+#playbar #pbTime{color:#dfe8f3;font-size:13px;min-width:110px;text-align:center}
+#playbar select{background:#2b3a4e;color:#eaf1f8;border:1px solid #45566e;border-radius:6px;padding:4px 6px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="crumb" id="crumb"></div>
+
+  <!-- ========== 视图：首页 ========== -->
+  <section id="v-home">
+    <h1 class="main">Numbers · 数字复习</h1>
+    <p class="sub">规则速查 → 单数字练习 → 句子实战 → 对话实战，一步一练</p>
+    <div class="mods" id="modGrid"></div>
+  </section>
+
+  <!-- ========== 视图：规则速查 ========== -->
+  <section id="v-rules" class="hidden">
+    <h1 class="main">规则速查</h1>
+    <p class="sub">6 张卡 · 每条标注来源【笔记】= 何琼听力笔记原文，【补充】= 雅思听力标准读法</p>
+    <div class="rcards" id="ruleCards"></div>
+  </section>
+
+  <!-- ========== 视图：单数字练习-类型选择 ========== -->
+  <section id="v-drill" class="hidden">
+    <h1 class="main">单数字练习</h1>
+    <p class="sub">选择一种数字类型，随机抽 8 题</p>
+    <div class="tiles" id="drillTiles"></div>
+  </section>
+
+  <!-- ========== 视图：机打练习 ========== -->
+  <section id="v-type" class="hidden">
+    <div class="typecard" id="typeCard"></div>
+  </section>
+
+  <!-- ========== 视图：句子实战 ========== -->
+  <section id="v-sent" class="hidden">
+    <div class="sentcard" id="sentCard"></div>
+    <div id="sentDemo"></div>
+  </section>
+
+  <!-- ========== 视图：对话实战-列表 ========== -->
+  <section id="v-dlgs" class="hidden">
+    <h1 class="main">对话实战</h1>
+    <p class="sub">仿雅思 Section 1 双人对话，整段播放逐空填写</p>
+    <div class="rcards" id="dlgList"></div>
+  </section>
+
+  <!-- ========== 视图：对话练习 ========== -->
+  <section id="v-dlg" class="hidden">
+    <div class="dlgcard" id="dlgCard"></div>
+  </section>
+
+  <!-- ========== 视图：错题本 ========== -->
+  <section id="v-errs" class="hidden">
+    <h1 class="main">错题本</h1>
+    <p class="sub">练习中答错的题会自动收进来，可重听重练</p>
+    <div class="errs" id="errList"></div>
+  </section>
+
+  <footer>IELTS Listening · Numbers Drill · 基于何琼听力笔记数字考点设计</footer>
+</div>
+
+<script>
+/* ================= 数据 ================= */
+const RULES = [
+ {t:"年份 Years", tag:"1960–2025", pts:[
+   ["四位数拆两段读：1987 → nineteen eighty-seven","补充"],
+   ["1500 → fifteen hundred（不说 one thousand five hundred）","笔记"],
+   ["15000 → fifteen thousand","笔记"],
+   ["范围表达：3000–4000 → three to four thousand","笔记"],
+   ["2000–2009 整读：2005 → two thousand and five","补充"]
+ ], samples:[["1987","nineteen eighty-seven","num_rule_01.mp3"],["2005","two thousand and five","num_rule_02.mp3"],["2015","twenty fifteen","num_rule_03.mp3"]],
+  tips:["提问词 How much 后面跟的就是数字本身","笔记"]},
+ {t:"时刻 Time", tag:"非整点", pts:[
+   ["12 小时制，听力里不加 am / pm","笔记"],
+   ["Ten past nine = 9:10","笔记"],
+   ["Ten to ten = 9:50；Ten ten = 10:10（= ten past ten）","笔记"],
+   ["A quarter past nine = 9:15","笔记"],
+   ["A quarter to ten = 9:45（笔记原文写“到九点”疑笔误，应为“到十点”）","笔记+修正"],
+   ["4:07 顺读 → four oh seven","补充"]
+ ], samples:[["4:07","four oh seven","num_rule_04.mp3"],["9:45","a quarter to ten","num_rule_05.mp3"],["9:10","ten past nine","num_rule_06.mp3"]],
+  tips:["past = 过，to = 差；at 接时刻必连读（at eight → u pa teight）","笔记"]},
+ {t:"日期 Dates", tag:"序数 & 月日年", pts:[
+   ["July 20 与 20 July 两种写法都对","笔记"],
+   ["出生日期固定 日.月.年：20.7.2022","笔记"],
+   ["the first 27th = 27.1（the first 指 1 月）","笔记"],
+   ["序数词辨尾音：-st / -nd / -rd / -th","补充"]
+ ], samples:[["July 20","July the twentieth","num_rule_07.mp3"],["2 June 2017","the second of June twenty seventeen","num_rule_08.mp3"],["27.1","the twenty-seventh of January","num_rule_09.mp3"]],
+  tips:["听力常说 2 June 2017（日+月+年），别被“月在前”的习惯带偏","补充"]},
+ {t:"金钱 Money", tag:"带单位", pts:[
+   ["$3.59 → three dollars fifty-nine（59 是 fifty-nine，不是 five-nine）","补充"],
+   ["$350 → three hundred and fifty dollars","补充"],
+   ["£120.80 → one hundred and twenty pounds eighty","补充"],
+   ["书写必带单位：$ / £ / €","用户定稿"]
+ ], samples:[["$3.59","three dollars fifty-nine","num_rule_10.mp3"],["$350","three hundred and fifty dollars","num_rule_11.mp3"],["£120.80","one hundred and twenty pounds eighty","num_rule_12.mp3"]],
+  tips:["金额常“先报总数再拆零”，听清 dollars / pounds 单复数","补充"]},
+ {t:"号码 Numbers", tag:"电话·邮编·航班", pts:[
+   ["Double 7 = 77；Triple 7 = 777","笔记"],
+   ["国外邮编 = 字母 + 数字（SW1A 1AA）","笔记"],
+   ["电话 3-3-4 分组读，0 读 oh 或 zero","补充"],
+   ["航班号 = 字母 + 数字（BA 127）","补充"]
+ ], samples:[["07700 900123","oh double seven oh oh, nine double oh one two three","num_rule_13.mp3"],["SW1A 1AA","S W one A, one double A","num_rule_14.mp3"],["BA127","B A one two seven","num_rule_15.mp3"]],
+  tips:["数字和大写专有名词是“相对不变”的定位信息","笔记"]},
+ {t:"辨音陷阱 Sound Traps", tag:"teen/ty · hundred/thousand", pts:[
+   ["-teen / -ty 靠重音辨：thirTEEN vs THIRty","补充"],
+   ["hundred / thousand：fifteen hundred vs fifteen thousand","笔记"],
+   ["0 的三种读法：zero / oh / nought","补充"],
+   ["同音词：route/root、diary/dairy；多音词：adult、garage","笔记"],
+   ["连读吞音：k 和辅音不读（sit and → siten）","笔记"]
+ ], samples:[["13 vs 30","thirteen, thirty","num_rule_16.mp3"],["1500","fifteen hundred","num_rule_17.mp3"],["15000","fifteen thousand","num_rule_18.mp3"]],
+  tips:["“为什么你考 5.5——单词发音不熟，连接词听不到”","笔记"]}
+];
+
+/* 每组 12 题题库：音频名预留（p01-p35 已有，p36-p84 待批量生成） */
+const GROUPS = [
+ {id:"digit", t:"纯数 01–200", d:"两位 / 三位数听写", q:[["dig_01.mp3","61","DIGIT"],["dig_02.mp3","83","DIGIT"],["dig_03.mp3","93","DIGIT"],["dig_04.mp3","136","DIGIT"],["dig_05.mp3","149","DIGIT"],["dig_06.mp3","184","DIGIT"],["dig_07.mp3","162","DIGIT"],["dig_08.mp3","101","DIGIT"],["dig_09.mp3","32","DIGIT"],["dig_10.mp3","154","DIGIT"],["dig_11.mp3","39","DIGIT"],["dig_12.mp3","49","DIGIT"],["dig_13.mp3","188","DIGIT"],["dig_14.mp3","20","DIGIT"],["dig_15.mp3","174","DIGIT"],["dig_16.mp3","35","DIGIT"],["dig_17.mp3","10","DIGIT"],["dig_18.mp3","48","DIGIT"],["dig_19.mp3","119","DIGIT"],["dig_20.mp3","98","DIGIT"],["dig_21.mp3","55","DIGIT"],["dig_22.mp3","88","DIGIT"],["dig_23.mp3","50","DIGIT"],["dig_24.mp3","145","DIGIT"],["dig_25.mp3","69","DIGIT"],["dig_26.mp3","66","DIGIT"],["dig_27.mp3","193","DIGIT"],["dig_28.mp3","53","DIGIT"],["dig_29.mp3","81","DIGIT"],["dig_30.mp3","7","DIGIT"],["dig_31.mp3","60","DIGIT"],["dig_32.mp3","141","DIGIT"],["dig_33.mp3","64","DIGIT"],["dig_34.mp3","68","DIGIT"],["dig_35.mp3","123","DIGIT"],["dig_36.mp3","116","DIGIT"],["dig_37.mp3","183","DIGIT"],["dig_38.mp3","198","DIGIT"],["dig_39.mp3","100","DIGIT"],["dig_40.mp3","129","DIGIT"],["dig_41.mp3","15","DIGIT"],["dig_42.mp3","165","DIGIT"],["dig_43.mp3","194","DIGIT"],["dig_44.mp3","152","DIGIT"],["dig_45.mp3","125","DIGIT"],["dig_46.mp3","192","DIGIT"],["dig_47.mp3","28","DIGIT"],["dig_48.mp3","127","DIGIT"],["dig_49.mp3","181","DIGIT"],["dig_50.mp3","46","DIGIT"],["dig_51.mp3","109","DIGIT"],["dig_52.mp3","151","DIGIT"],["dig_53.mp3","135","DIGIT"],["dig_54.mp3","73","DIGIT"],["dig_55.mp3","14","DIGIT"],["dig_56.mp3","156","DIGIT"],["dig_57.mp3","114","DIGIT"],["dig_58.mp3","5","DIGIT"],["dig_59.mp3","62","DIGIT"],["dig_60.mp3","113","DIGIT"],["dig_61.mp3","148","DIGIT"],["dig_62.mp3","159","DIGIT"],["dig_63.mp3","185","DIGIT"],["dig_64.mp3","122","DIGIT"],["dig_65.mp3","176","DIGIT"],["dig_66.mp3","58","DIGIT"],["dig_67.mp3","168","DIGIT"],["dig_68.mp3","24","DIGIT"],["dig_69.mp3","178","DIGIT"],["dig_70.mp3","52","DIGIT"]]},
+ {id:"year", t:"年份 1960–2029", d:"四位数听写", q:[["yr_01.mp3","1960","YEAR"],["yr_02.mp3","1961","YEAR"],["yr_03.mp3","1962","YEAR"],["yr_04.mp3","1963","YEAR"],["yr_05.mp3","1964","YEAR"],["yr_06.mp3","1965","YEAR"],["yr_07.mp3","1966","YEAR"],["yr_08.mp3","1967","YEAR"],["yr_09.mp3","1968","YEAR"],["yr_10.mp3","1969","YEAR"],["yr_11.mp3","1970","YEAR"],["yr_12.mp3","1971","YEAR"],["yr_13.mp3","1972","YEAR"],["yr_14.mp3","1973","YEAR"],["yr_15.mp3","1974","YEAR"],["yr_16.mp3","1975","YEAR"],["yr_17.mp3","1976","YEAR"],["yr_18.mp3","1977","YEAR"],["yr_19.mp3","1978","YEAR"],["yr_20.mp3","1979","YEAR"],["yr_21.mp3","1980","YEAR"],["yr_22.mp3","1981","YEAR"],["yr_23.mp3","1982","YEAR"],["yr_24.mp3","1983","YEAR"],["yr_25.mp3","1984","YEAR"],["yr_26.mp3","1985","YEAR"],["yr_27.mp3","1986","YEAR"],["yr_28.mp3","1987","YEAR"],["yr_29.mp3","1988","YEAR"],["yr_30.mp3","1989","YEAR"],["yr_31.mp3","1990","YEAR"],["yr_32.mp3","1991","YEAR"],["yr_33.mp3","1992","YEAR"],["yr_34.mp3","1993","YEAR"],["yr_35.mp3","1994","YEAR"],["yr_36.mp3","1995","YEAR"],["yr_37.mp3","1996","YEAR"],["yr_38.mp3","1997","YEAR"],["yr_39.mp3","1998","YEAR"],["yr_40.mp3","1999","YEAR"],["yr_41.mp3","2000","YEAR"],["yr_42.mp3","2001","YEAR"],["yr_43.mp3","2002","YEAR"],["yr_44.mp3","2003","YEAR"],["yr_45.mp3","2004","YEAR"],["yr_46.mp3","2005","YEAR"],["yr_47.mp3","2006","YEAR"],["yr_48.mp3","2007","YEAR"],["yr_49.mp3","2008","YEAR"],["yr_50.mp3","2009","YEAR"],["yr_51.mp3","2010","YEAR"],["yr_52.mp3","2011","YEAR"],["yr_53.mp3","2012","YEAR"],["yr_54.mp3","2013","YEAR"],["yr_55.mp3","2014","YEAR"],["yr_56.mp3","2015","YEAR"],["yr_57.mp3","2016","YEAR"],["yr_58.mp3","2017","YEAR"],["yr_59.mp3","2018","YEAR"],["yr_60.mp3","2019","YEAR"],["yr_61.mp3","2020","YEAR"],["yr_62.mp3","2021","YEAR"],["yr_63.mp3","2022","YEAR"],["yr_64.mp3","2023","YEAR"],["yr_65.mp3","2024","YEAR"],["yr_66.mp3","2025","YEAR"],["yr_67.mp3","2026","YEAR"],["yr_68.mp3","2027","YEAR"],["yr_69.mp3","2028","YEAR"],["yr_70.mp3","2029","YEAR"]]},
+ {id:"time", t:"时刻", d:"非整点 · past/to", q:[["tm_01.mp3","4:13","TIME"],["tm_02.mp3","10:58","TIME"],["tm_03.mp3","4:16","TIME"],["tm_04.mp3","2:03","TIME"],["tm_05.mp3","6:41","TIME"],["tm_06.mp3","11:17","TIME"],["tm_07.mp3","3:16","TIME"],["tm_08.mp3","11:19","TIME"],["tm_09.mp3","8:31","TIME"],["tm_10.mp3","6:26","TIME"],["tm_11.mp3","5:34","TIME"],["tm_12.mp3","11:37","TIME"],["tm_13.mp3","3:35","TIME"],["tm_14.mp3","11:59","TIME"],["tm_15.mp3","6:16","TIME"],["tm_16.mp3","1:19","TIME"],["tm_17.mp3","4:40","TIME"],["tm_18.mp3","9:13","TIME"],["tm_19.mp3","9:04","TIME"],["tm_20.mp3","8:25","TIME"],["tm_21.mp3","2:40","TIME"],["tm_22.mp3","3:22","TIME"],["tm_23.mp3","12:37","TIME"],["tm_24.mp3","12:52","TIME"],["tm_25.mp3","4:32","TIME"],["tm_26.mp3","4:31","TIME"],["tm_27.mp3","6:03","TIME"],["tm_28.mp3","10:51","TIME"],["tm_29.mp3","9:37","TIME"],["tm_30.mp3","4:34","TIME"],["tm_31.mp3","3:47","TIME"],["tm_32.mp3","3:20","TIME"],["tm_33.mp3","8:22","TIME"],["tm_34.mp3","3:32","TIME"],["tm_35.mp3","11:32","TIME"],["tm_36.mp3","12:59","TIME"],["tm_37.mp3","10:25","TIME"],["tm_38.mp3","9:55","TIME"],["tm_39.mp3","7:45","TIME"],["tm_40.mp3","1:51","TIME"],["tm_41.mp3","10:40","TIME"],["tm_42.mp3","4:07","TIME"],["tm_43.mp3","10:08","TIME"],["tm_44.mp3","4:44","TIME"],["tm_45.mp3","9:28","TIME"],["tm_46.mp3","12:22","TIME"],["tm_47.mp3","3:34","TIME"],["tm_48.mp3","8:20","TIME"],["tm_49.mp3","9:29","TIME"],["tm_50.mp3","6:55","TIME"],["tm_51.mp3","8:50","TIME"],["tm_52.mp3","11:08","TIME"],["tm_53.mp3","4:03","TIME"],["tm_54.mp3","11:42","TIME"],["tm_55.mp3","6:05","TIME"],["tm_56.mp3","12:55","TIME"],["tm_57.mp3","11:23","TIME"],["tm_58.mp3","11:11","TIME"],["tm_59.mp3","10:26","TIME"],["tm_60.mp3","3:02","TIME"],["tm_61.mp3","5:44","TIME"],["tm_62.mp3","3:07","TIME"],["tm_63.mp3","7:49","TIME"],["tm_64.mp3","10:28","TIME"],["tm_65.mp3","2:41","TIME"],["tm_66.mp3","3:03","TIME"],["tm_67.mp3","5:16","TIME"],["tm_68.mp3","4:30","TIME"],["tm_69.mp3","2:46","TIME"],["tm_70.mp3","11:20","TIME"]]},
+ {id:"date", t:"日期", d:"月日年 · 序数词", q:[["dt_01.mp3","5 November 2003","DATE"],["dt_02.mp3","9 November 2016","DATE"],["dt_03.mp3","5 May","DATE"],["dt_04.mp3","27 July","DATE"],["dt_05.mp3","27 November 1982","DATE"],["dt_06.mp3","27 May 2012","DATE"],["dt_07.mp3","1 March 1982","DATE"],["dt_08.mp3","19 February 2019","DATE"],["dt_09.mp3","6 January 2008","DATE"],["dt_10.mp3","21 October","DATE"],["dt_11.mp3","11 October","DATE"],["dt_12.mp3","8 December","DATE"],["dt_13.mp3","23 January 1975","DATE"],["dt_14.mp3","27 August 2016","DATE"],["dt_15.mp3","24 January","DATE"],["dt_16.mp3","26 December","DATE"],["dt_17.mp3","13 August","DATE"],["dt_18.mp3","12 May 2012","DATE"],["dt_19.mp3","21 May","DATE"],["dt_20.mp3","18 February 2008","DATE"],["dt_21.mp3","11 February","DATE"],["dt_22.mp3","23 March 2021","DATE"],["dt_23.mp3","4 May 1960","DATE"],["dt_24.mp3","7 October 2019","DATE"],["dt_25.mp3","5 August 1975","DATE"],["dt_26.mp3","19 October","DATE"],["dt_27.mp3","5 May 1975","DATE"],["dt_28.mp3","18 May","DATE"],["dt_29.mp3","24 June 1975","DATE"],["dt_30.mp3","13 June 1998","DATE"],["dt_31.mp3","22 November","DATE"],["dt_32.mp3","28 August","DATE"],["dt_33.mp3","5 May 2003","DATE"],["dt_34.mp3","24 April","DATE"],["dt_35.mp3","3 April","DATE"],["dt_36.mp3","7 September 2003","DATE"],["dt_37.mp3","19 November","DATE"],["dt_38.mp3","11 November","DATE"],["dt_39.mp3","10 September 2012","DATE"],["dt_40.mp3","12 June 1982","DATE"],["dt_41.mp3","10 June","DATE"],["dt_42.mp3","6 November 1998","DATE"],["dt_43.mp3","15 March 1975","DATE"],["dt_44.mp3","13 September 2003","DATE"],["dt_45.mp3","10 April","DATE"],["dt_46.mp3","16 January","DATE"],["dt_47.mp3","2 April 2008","DATE"],["dt_48.mp3","20 November 1982","DATE"],["dt_49.mp3","2 July 1975","DATE"],["dt_50.mp3","15 February 2003","DATE"],["dt_51.mp3","5 October","DATE"],["dt_52.mp3","28 June","DATE"],["dt_53.mp3","15 April 2016","DATE"],["dt_54.mp3","11 August 1960","DATE"],["dt_55.mp3","19 June 2021","DATE"],["dt_56.mp3","17 October 2012","DATE"],["dt_57.mp3","3 December 2021","DATE"],["dt_58.mp3","10 February","DATE"],["dt_59.mp3","25 June","DATE"],["dt_60.mp3","17 October","DATE"],["dt_61.mp3","17 July","DATE"],["dt_62.mp3","24 October","DATE"],["dt_63.mp3","28 December 2003","DATE"],["dt_64.mp3","13 March","DATE"],["dt_65.mp3","19 March 1998","DATE"],["dt_66.mp3","10 July 1960","DATE"],["dt_67.mp3","23 May 2021","DATE"],["dt_68.mp3","15 February 1991","DATE"],["dt_69.mp3","23 October 2019","DATE"],["dt_70.mp3","6 February 2008","DATE"]]},
+ {id:"money", t:"金钱", d:"带单位 · 小数", q:[["mo_01.mp3","€311.31","MONEY"],["mo_02.mp3","$163.76","MONEY"],["mo_03.mp3","$706.40","MONEY"],["mo_04.mp3","£172.03","MONEY"],["mo_05.mp3","£341.98","MONEY"],["mo_06.mp3","£376.79","MONEY"],["mo_07.mp3","€85.50","MONEY"],["mo_08.mp3","€986.70","MONEY"],["mo_09.mp3","$184.68","MONEY"],["mo_10.mp3","£518.75","MONEY"],["mo_11.mp3","€737.40","MONEY"],["mo_12.mp3","£73.78","MONEY"],["mo_13.mp3","€522.99","MONEY"],["mo_14.mp3","€306.30","MONEY"],["mo_15.mp3","$409.34","MONEY"],["mo_16.mp3","$137.50","MONEY"],["mo_17.mp3","£562.95","MONEY"],["mo_18.mp3","€199.80","MONEY"],["mo_19.mp3","$329.47","MONEY"],["mo_20.mp3","€348.54","MONEY"],["mo_21.mp3","€947.50","MONEY"],["mo_22.mp3","£440.7","MONEY"],["mo_23.mp3","€602.50","MONEY"],["mo_24.mp3","£477.70","MONEY"],["mo_25.mp3","£496.10","MONEY"],["mo_26.mp3","$65.68","MONEY"],["mo_27.mp3","€719.95","MONEY"],["mo_28.mp3","£247.84","MONEY"],["mo_29.mp3","$4.60","MONEY"],["mo_30.mp3","$991.45","MONEY"],["mo_31.mp3","€467.57","MONEY"],["mo_32.mp3","€16.61","MONEY"],["mo_33.mp3","£54.25","MONEY"],["mo_34.mp3","£67.90","MONEY"],["mo_35.mp3","$505.95","MONEY"],["mo_36.mp3","€46.32","MONEY"],["mo_37.mp3","€462.16","MONEY"],["mo_38.mp3","€208.74","MONEY"],["mo_39.mp3","€427.10","MONEY"],["mo_40.mp3","€329.30","MONEY"],["mo_41.mp3","$188.18","MONEY"],["mo_42.mp3","$991.40","MONEY"],["mo_43.mp3","€42.03","MONEY"],["mo_44.mp3","€98.82","MONEY"],["mo_45.mp3","€218.74","MONEY"],["mo_46.mp3","$226.42","MONEY"],["mo_47.mp3","$225.27","MONEY"],["mo_48.mp3","$350.54","MONEY"],["mo_49.mp3","€451.94","MONEY"],["mo_50.mp3","£106.70","MONEY"],["mo_51.mp3","$775.30","MONEY"],["mo_52.mp3","£245.69","MONEY"],["mo_53.mp3","£962.90","MONEY"],["mo_54.mp3","€771.10","MONEY"],["mo_55.mp3","£155.29","MONEY"],["mo_56.mp3","$470.01","MONEY"],["mo_57.mp3","$639.80","MONEY"],["mo_58.mp3","$229.2","MONEY"],["mo_59.mp3","$313.93","MONEY"],["mo_60.mp3","$560.05","MONEY"],["mo_61.mp3","€989.70","MONEY"],["mo_62.mp3","€167.07","MONEY"],["mo_63.mp3","$344.45","MONEY"],["mo_64.mp3","£156.8","MONEY"],["mo_65.mp3","£359.76","MONEY"],["mo_66.mp3","£309.09","MONEY"],["mo_67.mp3","£2.46","MONEY"],["mo_68.mp3","£948.80","MONEY"],["mo_69.mp3","$440.41","MONEY"],["mo_70.mp3","£823.40","MONEY"]]},
+ {id:"code", t:"号码", d:"电话 · 邮编 · 航班", q:[["cd_01.mp3","07014371121","CODE"],["cd_02.mp3","07596746576","CODE"],["cd_03.mp3","07499972903","CODE"],["cd_04.mp3","07024114367","CODE"],["cd_05.mp3","07981017270","CODE"],["cd_06.mp3","07058880966","CODE"],["cd_07.mp3","07506730347","CODE"],["cd_08.mp3","07098007750","CODE"],["cd_09.mp3","07842094827","CODE"],["cd_10.mp3","07551766167","CODE"],["cd_11.mp3","07017975120","CODE"],["cd_12.mp3","07536490326","CODE"],["cd_13.mp3","07574048586","CODE"],["cd_14.mp3","07082737491","CODE"],["cd_15.mp3","07403928391","CODE"],["cd_16.mp3","07508845296","CODE"],["cd_17.mp3","07567500762","CODE"],["cd_18.mp3","07439429009","CODE"],["cd_19.mp3","07162283262","CODE"],["cd_20.mp3","07938498147","CODE"],["cd_21.mp3","07873569126","CODE"],["cd_22.mp3","07371147234","CODE"],["cd_23.mp3","07965561149","CODE"],["cd_24.mp3","07738441049","CODE"],["cd_25.mp3","07699883420","CODE"],["cd_26.mp3","07496138765","CODE"],["cd_27.mp3","07715863103","CODE"],["cd_28.mp3","07140507683","CODE"],["cd_29.mp3","07094790615","CODE"],["cd_30.mp3","07887793803","CODE"],["cd_31.mp3","046 7966 4678","CODE"],["cd_32.mp3","092 6361 4802","CODE"],["cd_33.mp3","056 5968 5360","CODE"],["cd_34.mp3","057 8696 6979","CODE"],["cd_35.mp3","047 9211 1865","CODE"],["cd_36.mp3","035 5990 9711","CODE"],["cd_37.mp3","057 2740 9648","CODE"],["cd_38.mp3","046 9326 9766","CODE"],["cd_39.mp3","090 5177 6359","CODE"],["cd_40.mp3","098 9117 1200","CODE"],["cd_41.mp3","023 8955 1715","CODE"],["cd_42.mp3","099 7198 9693","CODE"],["cd_43.mp3","056 6837 7061","CODE"],["cd_44.mp3","085 6082 4100","CODE"],["cd_45.mp3","062 2009 9405","CODE"],["cd_46.mp3","BS44 7NR","CODE"],["cd_47.mp3","SE97 7GD","CODE"],["cd_48.mp3","EH83 4ZG","CODE"],["cd_49.mp3","CB89 7LB","CODE"],["cd_50.mp3","NW84 9HA","CODE"],["cd_51.mp3","LS95 4HP","CODE"],["cd_52.mp3","CB76 3FU","CODE"],["cd_53.mp3","CB76 6GD","CODE"],["cd_54.mp3","KT88 4YF","CODE"],["cd_55.mp3","KT46 4GN","CODE"],["cd_56.mp3","BS74 5UB","CODE"],["cd_57.mp3","BS18 9YS","CODE"],["cd_58.mp3","SW59 2BT","CODE"],["cd_59.mp3","EH77 3TJ","CODE"],["cd_60.mp3","WC67 8TW","CODE"],["cd_61.mp3","UA171","CODE"],["cd_62.mp3","VS693","CODE"],["cd_63.mp3","UA311","CODE"],["cd_64.mp3","DL944","CODE"],["cd_65.mp3","LH313","CODE"],["cd_66.mp3","LH139","CODE"],["cd_67.mp3","BA700","CODE"],["cd_68.mp3","NZ113","CODE"],["cd_69.mp3","UA925","CODE"],["cd_70.mp3","AF703","CODE"]]},
+ {id:"frac", t:"分数", d:"a half · three quarters", q:[["fr_01.mp3","3 1/2","FRAC"],["fr_02.mp3","5/8","FRAC"],["fr_03.mp3","6/11","FRAC"],["fr_04.mp3","3/4","FRAC"],["fr_05.mp3","2/13","FRAC"],["fr_06.mp3","5/6","FRAC"],["fr_07.mp3","7/11","FRAC"],["fr_08.mp3","3/10","FRAC"],["fr_09.mp3","5/11","FRAC"],["fr_10.mp3","9/11","FRAC"],["fr_11.mp3","2/7","FRAC"],["fr_12.mp3","2 1/3","FRAC"],["fr_13.mp3","2/6","FRAC"],["fr_14.mp3","1/11","FRAC"],["fr_15.mp3","4/6","FRAC"],["fr_16.mp3","12/13","FRAC"],["fr_17.mp3","2/9","FRAC"],["fr_18.mp3","1/5","FRAC"],["fr_19.mp3","3 3/4","FRAC"],["fr_20.mp3","10/11","FRAC"],["fr_21.mp3","9/10","FRAC"],["fr_22.mp3","1/12","FRAC"],["fr_23.mp3","6/13","FRAC"],["fr_24.mp3","7/13","FRAC"],["fr_25.mp3","5/9","FRAC"],["fr_26.mp3","8/9","FRAC"],["fr_27.mp3","11/13","FRAC"],["fr_28.mp3","1/16","FRAC"],["fr_29.mp3","3/13","FRAC"],["fr_30.mp3","5/16","FRAC"],["fr_31.mp3","7/16","FRAC"],["fr_32.mp3","1/6","FRAC"],["fr_33.mp3","11/12","FRAC"],["fr_34.mp3","3/16","FRAC"],["fr_35.mp3","11/16","FRAC"],["fr_36.mp3","9/16","FRAC"],["fr_37.mp3","3/8","FRAC"],["fr_38.mp3","7/12","FRAC"],["fr_39.mp3","5 3/4","FRAC"],["fr_40.mp3","1 1/2","FRAC"],["fr_41.mp3","4/5","FRAC"],["fr_42.mp3","3/7","FRAC"],["fr_43.mp3","1/9","FRAC"],["fr_44.mp3","1 3/4","FRAC"],["fr_45.mp3","1 2/3","FRAC"],["fr_46.mp3","4/9","FRAC"],["fr_47.mp3","1/7","FRAC"],["fr_48.mp3","8/13","FRAC"],["fr_49.mp3","8/11","FRAC"],["fr_50.mp3","4/13","FRAC"],["fr_51.mp3","5/13","FRAC"],["fr_52.mp3","6/7","FRAC"],["fr_53.mp3","7/9","FRAC"],["fr_54.mp3","2/3","FRAC"],["fr_55.mp3","4/11","FRAC"],["fr_56.mp3","13/16","FRAC"],["fr_57.mp3","1/8","FRAC"],["fr_58.mp3","10/13","FRAC"],["fr_59.mp3","1/13","FRAC"],["fr_60.mp3","2 1/8","FRAC"],["fr_61.mp3","2 1/4","FRAC"],["fr_62.mp3","3/5","FRAC"],["fr_63.mp3","4 1/2","FRAC"],["fr_64.mp3","3/11","FRAC"],["fr_65.mp3","7/8","FRAC"],["fr_66.mp3","1/2","FRAC"],["fr_67.mp3","1/10","FRAC"],["fr_68.mp3","2 2/3","FRAC"],["fr_69.mp3","5/7","FRAC"],["fr_70.mp3","2/11","FRAC"]]},
+];
+
+/* 句子实战：70 句（s01-s70），每句 1-2 个数字，场景覆盖医院/学校/车站/机场/酒店/银行/网购 */
+const SENTS = [
+ {scene:"医院", base:"Your appointment is at <b>{{1}}</b> in Room <b>{{2}}</b>.", blanks:[["9:15","TIME"],["204","DIGIT"]], audio:"num_s01.mp3"},
+ {scene:"医院", base:"Please call <b>{{1}}</b> to confirm your visit.", blanks:[["07700 900123","CODE"]], audio:"num_s02.mp3"},
+ {scene:"学校", base:"The course code is <b>{{1}}</b> and the classroom is Room <b>{{2}}</b>.", blanks:[["ME204","CODE"],["15","DIGIT"]], audio:"num_s03.mp3"},
+ {scene:"学校", base:"The tuition fee is <b>{{1}}</b> per term.", blanks:[["$350","MONEY"]], audio:"num_s04.mp3"},
+ {scene:"车站", base:"The train to Manchester leaves at <b>{{1}}</b> from Platform <b>{{2}}</b>.", blanks:[["14:07","TIME"],["3","DIGIT"]], audio:"num_s05.mp3"},
+ {scene:"车站", base:"A single ticket costs <b>{{1}}</b>.", blanks:[["£12.80","MONEY"]], audio:"num_s06.mp3"},
+ {scene:"机场", base:"Flight <b>{{1}}</b> departs from Gate <b>{{2}}</b> at quarter past nine.", blanks:[["BA127","CODE"],["45","DIGIT"]], audio:"num_s07.mp3"},
+ {scene:"酒店", base:"Your room is <b>{{1}}</b> on the fifth floor; that will be <b>{{2}}</b> per night.", blanks:[["508","DIGIT"],["£120.80","MONEY"]], audio:"num_s08.mp3"},
+ {scene:"银行", base:"Your account number is <b>{{1}}</b>.", blanks:[["76543218","DIGIT"]], audio:"num_s09.mp3"},
+ {scene:"网购", base:"The postcode is <b>{{1}}</b>.", blanks:[["SW1A 1AA","CODE"]], audio:"num_s10.mp3"},
+ {scene:"医院", base:"The dentist can see you at <b>{{1}}</b> on Tuesday morning.", blanks:[["10:30","TIME"]], audio:"num_s11.mp3"},
+ {scene:"医院", base:"Please arrive <b>{{1}}</b> minutes before your appointment.", blanks:[["15","DIGIT"]], audio:"num_s12.mp3"},
+ {scene:"医院", base:"Your blood test results will be ready in <b>{{1}}</b> days.", blanks:[["3","DIGIT"]], audio:"num_s13.mp3"},
+ {scene:"医院", base:"The clinic opens at <b>{{1}}</b> on weekdays.", blanks:[["8:15","TIME"]], audio:"num_s14.mp3"},
+ {scene:"医院", base:"Dr. Lee's surgery is in Building <b>{{1}}</b>.", blanks:[["B2","CODE"]], audio:"num_s15.mp3"},
+ {scene:"医院", base:"The consultation fee is <b>{{1}}</b>.", blanks:[["£45.00","MONEY"]], audio:"num_s16.mp3"},
+ {scene:"医院", base:"Your next check-up is on <b>{{1}}</b>.", blanks:[["5 May","DATE"]], audio:"num_s17.mp3"},
+ {scene:"医院", base:"Take one tablet every <b>{{1}}</b> hours.", blanks:[["6","DIGIT"]], audio:"num_s18.mp3"},
+ {scene:"医院", base:"In case of emergency, dial <b>{{1}}</b>.", blanks:[["112","CODE"]], audio:"num_s19.mp3"},
+ {scene:"医院", base:"A follow-up visit costs <b>{{1}}</b>.", blanks:[["$25","MONEY"]], audio:"num_s20.mp3"},
+ {scene:"学校", base:"The library is open until <b>{{1}}</b> on Fridays.", blanks:[["9:45","TIME"]], audio:"num_s21.mp3"},
+ {scene:"学校", base:"Your student ID number is <b>{{1}}</b>.", blanks:[["20240088","DIGIT"]], audio:"num_s22.mp3"},
+ {scene:"学校", base:"The assignment is due on <b>{{1}}</b>.", blanks:[["22 October","DATE"]], audio:"num_s23.mp3"},
+ {scene:"学校", base:"Registration closes at <b>{{1}}</b> this afternoon.", blanks:[["4:30","TIME"]], audio:"num_s24.mp3"},
+ {scene:"学校", base:"The course lasts <b>{{1}}</b> weeks.", blanks:[["12","DIGIT"]], audio:"num_s25.mp3"},
+ {scene:"学校", base:"There are <b>{{1}}</b> students in this class.", blanks:[["35","DIGIT"]], audio:"num_s26.mp3"},
+ {scene:"学校", base:"The science lab is in Room <b>{{1}}</b>.", blanks:[["315","DIGIT"]], audio:"num_s27.mp3"},
+ {scene:"学校", base:"Please submit your essay by <b>{{1}}</b>.", blanks:[["17 May 2025","DATE"]], audio:"num_s28.mp3"},
+ {scene:"学校", base:"The book deposit is <b>{{1}}</b>.", blanks:[["$20","MONEY"]], audio:"num_s29.mp3"},
+ {scene:"学校", base:"Your exam starts at <b>{{1}}</b> next Monday.", blanks:[["2:05","TIME"]], audio:"num_s30.mp3"},
+ {scene:"车站", base:"The last bus to the city centre leaves at <b>{{1}}</b>.", blanks:[["11:40","TIME"]], audio:"num_s31.mp3"},
+ {scene:"车站", base:"A return ticket to Oxford costs <b>{{1}}</b>.", blanks:[["£28.50","MONEY"]], audio:"num_s32.mp3"},
+ {scene:"车站", base:"The 15:20 train has been delayed by <b>{{1}}</b> minutes.", blanks:[["20","DIGIT"]], audio:"num_s33.mp3"},
+ {scene:"车站", base:"Please wait behind the yellow line on Platform <b>{{1}}</b>.", blanks:[["2","DIGIT"]], audio:"num_s34.mp3"},
+ {scene:"车站", base:"Your luggage allowance is <b>{{1}}</b> kilograms.", blanks:[["20","DIGIT"]], audio:"num_s35.mp3"},
+ {scene:"车站", base:"The coach departs from Bay <b>{{1}}</b> every hour.", blanks:[["9","DIGIT"]], audio:"num_s36.mp3"},
+ {scene:"车站", base:"The monthly pass costs <b>{{1}}</b>.", blanks:[["£99.90","MONEY"]], audio:"num_s37.mp3"},
+ {scene:"车站", base:"The next express service is at <b>{{1}}</b>.", blanks:[["7:55","TIME"]], audio:"num_s38.mp3"},
+ {scene:"车站", base:"Please have your ticket ready at Gate <b>{{1}}</b>.", blanks:[["4","DIGIT"]], audio:"num_s39.mp3"},
+ {scene:"车站", base:"The journey takes about <b>{{1}}</b> minutes.", blanks:[["90","DIGIT"]], audio:"num_s40.mp3"},
+ {scene:"机场", base:"Please check in at least <b>{{1}}</b> hours before departure.", blanks:[["2","DIGIT"]], audio:"num_s41.mp3"},
+ {scene:"机场", base:"The flight arrives at <b>{{1}}</b> local time.", blanks:[["18:35","TIME"]], audio:"num_s42.mp3"},
+ {scene:"机场", base:"Your seat is <b>{{1}}</b>.", blanks:[["23A","CODE"]], audio:"num_s43.mp3"},
+ {scene:"机场", base:"The baggage claim area is on Level <b>{{1}}</b>.", blanks:[["1","DIGIT"]], audio:"num_s44.mp3"},
+ {scene:"机场", base:"Duty-free shopping closes at <b>{{1}}</b>.", blanks:[["9:20","TIME"]], audio:"num_s45.mp3"},
+ {scene:"机场", base:"Flight <b>{{1}}</b> is now boarding at Gate <b>{{2}}</b>.", blanks:[["VS204","CODE"],["14","DIGIT"]], audio:"num_s46.mp3"},
+ {scene:"机场", base:"The airport shuttle runs every <b>{{1}}</b> minutes.", blanks:[["30","DIGIT"]], audio:"num_s47.mp3"},
+ {scene:"机场", base:"Excess baggage costs <b>{{1}}</b> per kilogram.", blanks:[["$60","MONEY"]], audio:"num_s48.mp3"},
+ {scene:"机场", base:"Your connection is in Terminal <b>{{1}}</b>.", blanks:[["5","DIGIT"]], audio:"num_s49.mp3"},
+ {scene:"机场", base:"The plane will land at <b>{{1}}</b>.", blanks:[["16:10","TIME"]], audio:"num_s50.mp3"},
+ {scene:"酒店", base:"Check-out time is <b>{{1}}</b>.", blanks:[["11:30","TIME"]], audio:"num_s51.mp3"},
+ {scene:"酒店", base:"Breakfast is served between 7 and <b>{{1}}</b>.", blanks:[["9:30","TIME"]], audio:"num_s52.mp3"},
+ {scene:"酒店", base:"Your room key code is <b>{{1}}</b>.", blanks:[["4821","DIGIT"]], audio:"num_s53.mp3"},
+ {scene:"酒店", base:"Room service is available until <b>{{1}}</b>.", blanks:[["10:40","TIME"]], audio:"num_s54.mp3"},
+ {scene:"酒店", base:"The hotel bus leaves every <b>{{1}}</b> minutes.", blanks:[["15","DIGIT"]], audio:"num_s55.mp3"},
+ {scene:"酒店", base:"A double room with a view costs <b>{{1}}</b> per night.", blanks:[["$180","MONEY"]], audio:"num_s56.mp3"},
+ {scene:"酒店", base:"Your reservation is for <b>{{1}}</b> nights.", blanks:[["2","DIGIT"]], audio:"num_s57.mp3"},
+ {scene:"酒店", base:"The swimming pool closes at <b>{{1}}</b>.", blanks:[["8:50","TIME"]], audio:"num_s58.mp3"},
+ {scene:"酒店", base:"Please call the front desk on extension <b>{{1}}</b>.", blanks:[["320","DIGIT"]], audio:"num_s59.mp3"},
+ {scene:"酒店", base:"The taxi to the airport costs about <b>{{1}}</b>.", blanks:[["£35","MONEY"]], audio:"num_s60.mp3"},
+ {scene:"银行", base:"Please enter your four-digit PIN: <b>{{1}}</b>.", blanks:[["7352","DIGIT"]], audio:"num_s61.mp3"},
+ {scene:"银行", base:"The bank opens at <b>{{1}}</b> on Saturdays.", blanks:[["9:15","TIME"]], audio:"num_s62.mp3"},
+ {scene:"银行", base:"Your monthly statement is sent on the <b>{{1}}</b> of each month.", blanks:[["1st","DATE"]], audio:"num_s63.mp3"},
+ {scene:"银行", base:"The transfer will arrive within <b>{{1}}</b> working days.", blanks:[["2","DIGIT"]], audio:"num_s64.mp3"},
+ {scene:"银行", base:"The minimum deposit is <b>{{1}}</b>.", blanks:[["$100","MONEY"]], audio:"num_s65.mp3"},
+ {scene:"银行", base:"Please confirm your account number: <b>{{1}}</b>.", blanks:[["00235578","DIGIT"]], audio:"num_s66.mp3"},
+ {scene:"银行", base:"The safe deposit box costs <b>{{1}}</b> a year.", blanks:[["£60","MONEY"]], audio:"num_s67.mp3"},
+ {scene:"银行", base:"Our branch at <b>{{1}}</b> High Street closes at <b>{{2}}</b>.", blanks:[["56","DIGIT"],["5:45","TIME"]], audio:"num_s68.mp3"},
+ {scene:"银行", base:"The cash machine dispenses up to <b>{{1}}</b> per day.", blanks:[["$500","MONEY"]], audio:"num_s69.mp3"},
+ {scene:"银行", base:"For lost cards, call <b>{{1}}</b>.", blanks:[["0800 300 555","CODE"]], audio:"num_s70.mp3"},
+﻿ {scene:"学校", base:"The course fee is <b>{{1}}</b>, and there are <b>{{2}}</b> students in the class.", blanks:[["$30","MONEY"],["13","DIGIT"]], audio:"num_s71.mp3"},
+ {scene:"医院", base:"Your appointment is at <b>{{1}}</b> in Room <b>{{2}}</b>.", blanks:[["9:15","TIME"],["30","DIGIT"]], audio:"num_s72.mp3"},
+ {scene:"车站", base:"The train to Cambridge leaves at <b>{{1}}</b> from Platform <b>{{2}}</b>.", blanks:[["14:40","TIME"],["15","DIGIT"]], audio:"num_s73.mp3"},
+ {scene:"酒店", base:"Your room is <b>{{1}}</b> on the <b>{{2}}</b>th floor.", blanks:[["40","DIGIT"],["14","DIGIT"]], audio:"num_s74.mp3"},
+ {scene:"学校", base:"The tuition fee is <b>{{1}}</b>, and the course lasts <b>{{2}}</b> weeks.", blanks:[["£50","MONEY"],["15","DIGIT"]], audio:"num_s75.mp3"},
+ {scene:"医院", base:"Your check-up is on <b>{{1}}</b>, and please arrive <b>{{2}}</b> minutes before your appointment.", blanks:[["16 May","DATE"],["60","DIGIT"]], audio:"num_s76.mp3"},
+ {scene:"车站", base:"The single fare is <b>{{1}}</b>, and the journey takes about <b>{{2}}</b> minutes.", blanks:[["£17","MONEY"],["70","DIGIT"]], audio:"num_s77.mp3"},
+ {scene:"机场", base:"Flight <b>{{1}}</b> now boards at Gate <b>{{2}}</b>.", blanks:[["18","DIGIT"],["80","DIGIT"]], audio:"num_s78.mp3"},
+ {scene:"银行", base:"The transfer will arrive on <b>{{1}}</b>, and the card expires in <b>{{2}}</b> days.", blanks:[["19","DATE"],["90","DIGIT"]], audio:"num_s79.mp3"},
+ {scene:"学校", base:"The library opens at <b>{{1}}</b>, with <b>{{2}}</b> seats available.", blanks:[["9:00","TIME"],["40","DIGIT"]], audio:"num_s80.mp3"},
+ {scene:"医院", base:"Your temperature is <b>{{1}}</b>, and the doctor will see you in <b>{{2}}</b> minutes.", blanks:[["39.5","DIGIT"],["15","DIGIT"]], audio:"num_s81.mp3"},
+ {scene:"车站", base:"The next train is at <b>{{1}}</b> — that's twenty past four in the afternoon.", blanks:[["16:20","TIME"]], audio:"num_s82.mp3"},
+ {scene:"学校", base:"The textbook costs <b>{{1}}</b>, and the reading starts on page <b>{{2}}</b>.", blanks:[["$19","MONEY"],["90","DIGIT"]], audio:"num_s83.mp3"},
+ {scene:"医院", base:"The vaccination starts at <b>{{1}}</b>, and there are <b>{{2}}</b> people ahead of you.", blanks:[["15:30","TIME"],["40","DIGIT"]], audio:"num_s84.mp3"},
+ {scene:"酒店", base:"Check-in is at <b>{{1}}</b>, and the room costs <b>{{2}}</b>.", blanks:[["18:00","TIME"],["$160","MONEY"]], audio:"num_s85.mp3"},
+ {scene:"银行", base:"Please go to counter <b>{{1}}</b>; the waiting time is about <b>{{2}}</b> minutes.", blanks:[["14","DIGIT"],["40","DIGIT"]], audio:"num_s86.mp3"},
+ {scene:"学校", base:"The exam is on <b>{{1}}</b> and lasts <b>{{2}}</b> minutes.", blanks:[["16 May","DATE"],["90","DIGIT"]], audio:"num_s87.mp3"},
+ {scene:"车站", base:"The monthly pass is <b>{{1}}</b>, but with a student card it's only <b>{{2}}</b>.", blanks:[["£70","MONEY"],["£17","MONEY"]], audio:"num_s88.mp3"},
+ {scene:"医院", base:"The pharmacy closes at <b>{{1}}</b>, and your collection number is <b>{{2}}</b>.", blanks:[["18:45","TIME"],["60","DIGIT"]], audio:"num_s89.mp3"},
+ {scene:"超市", base:"Your change is <b>{{1}}</b>, and your receipt number is <b>{{2}}</b>.", blanks:[["$18","MONEY"],["80","DIGIT"]], audio:"num_s90.mp3"},
+ {scene:"医院", base:"Your bed is number <b>{{1}}</b>.", blanks:[["89","DIGIT"]], audio:"num_s91.mp3"},
+ {scene:"车站", base:"The next bus arrives at <b>{{1}}</b>.", blanks:[["8:09","TIME"]], audio:"num_s92.mp3"},
+ {scene:"学校", base:"Your student number is <b>{{1}}</b>.", blanks:[["1890","DIGIT"]], audio:"num_s93.mp3"},
+ {scene:"机场", base:"Flight <b>{{1}}</b> boards at Gate <b>{{2}}</b>.", blanks:[["BA98","CODE"],["9","DIGIT"]], audio:"num_s94.mp3"},
+ {scene:"酒店", base:"Your room is <b>{{1}}</b>, and check-out is at <b>{{2}}</b>.", blanks:[["98","DIGIT"],["8:50","TIME"]], audio:"num_s95.mp3"},
+ {scene:"银行", base:"The last three digits of your account are <b>{{1}}</b>.", blanks:[["809","DIGIT"]], audio:"num_s96.mp3"},
+ {scene:"车站", base:"A single to the airport is <b>{{1}}</b>, and the last train leaves at <b>{{2}}</b>.", blanks:[["£8.90","MONEY"],["21:00","TIME"]], audio:"num_s97.mp3"},
+ {scene:"医院", base:"Your blood results will be ready on <b>{{1}}</b>, and your follow-up is in <b>{{2}}</b>.", blanks:[["8 June","DATE"],["September","DATE"]], audio:"num_s98.mp3"},
+ {scene:"超市", base:"Please go to checkout <b>{{1}}</b> with your <b>{{2}}</b> items.", blanks:[["9","DIGIT"],["8","DIGIT"]], audio:"num_s99.mp3"},
+ {scene:"学校", base:"Your class is in Room <b>{{1}}</b>, starting at <b>{{2}}</b>.", blanks:[["89","DIGIT"],["9:08","TIME"]], audio:"num_s100.mp3"},
+ {scene:"银行", base:"The minimum deposit is <b>{{1}}</b>.", blanks:[["$1500","MONEY"]], audio:"num_s101.mp3"},
+ {scene:"车站", base:"The annual pass costs <b>{{1}}</b>.", blanks:[["£450","MONEY"]], audio:"num_s102.mp3"},
+ {scene:"医院", base:"The insurance covers up to <b>{{1}}</b>.", blanks:[["$1050","MONEY"]], audio:"num_s103.mp3"},
+ {scene:"学校", base:"The scholarship is worth <b>{{1}}</b> a year.", blanks:[["$2500","MONEY"]], audio:"num_s104.mp3"},
+ {scene:"酒店", base:"The conference room seats <b>{{1}}</b> people, and it costs <b>{{2}}</b> for the day.", blanks:[["350","DIGIT"],["$1200","MONEY"]], audio:"num_s105.mp3"},
+ {scene:"银行", base:"The daily transfer limit is <b>{{1}}</b>.", blanks:[["£1800","MONEY"]], audio:"num_s106.mp3"},
+ {scene:"车站", base:"Your luggage allowance is <b>{{1}}</b> kilograms, and excess baggage costs <b>{{2}}</b> a kilo.", blanks:[["50","DIGIT"],["$12","MONEY"]], audio:"num_s107.mp3"},
+ {scene:"学校", base:"The overseas tuition fee is <b>{{1}}</b>.", blanks:[["$1980","MONEY"]], audio:"num_s108.mp3"},
+ {scene:"医院", base:"The hospital requires a deposit of <b>{{1}}</b>.", blanks:[["£1250","MONEY"]], audio:"num_s109.mp3"},
+ {scene:"超市", base:"The fridge is <b>{{1}}</b>, on sale this week.", blanks:[["$899","MONEY"]], audio:"num_s110.mp3"},
+ {scene:"学校", base:"The course starts in <b>{{1}}</b>.", blanks:[["September","DATE"]], audio:"num_s111.mp3"},
+ {scene:"车站", base:"The fare is <b>{{1}}</b> — it's a short ride.", blanks:[["£8","MONEY"]], audio:"num_s112.mp3"},
+ {scene:"医院", base:"Your appointment is at <b>{{1}}</b>.", blanks:[["10:30","TIME"]], audio:"num_s113.mp3"},
+ {scene:"酒店", base:"Room <b>{{1}}</b>, on the fourth floor.", blanks:[["415","DIGIT"]], audio:"num_s114.mp3"},
+ {scene:"银行", base:"The monthly fee is <b>{{1}}</b>.", blanks:[["£4","MONEY"]], audio:"num_s115.mp3"},
+ {scene:"机场", base:"Your gate is <b>{{1}}</b>.", blanks:[["7","DIGIT"]], audio:"num_s116.mp3"},
+ {scene:"车站", base:"The last train is at <b>{{1}}</b>.", blanks:[["23:40","TIME"]], audio:"num_s117.mp3"},
+ {scene:"学校", base:"The textbook is <b>{{1}}</b>.", blanks:[["$28","MONEY"]], audio:"num_s118.mp3"},
+ {scene:"医院", base:"Your follow-up is on <b>{{1}}</b>.", blanks:[["5 June","DATE"]], audio:"num_s119.mp3"},
+ {scene:"超市", base:"That's <b>{{1}}</b> change.", blanks:[["$9","MONEY"]], audio:"num_s120.mp3"},
+ {scene:"健身房", base:"The monthly pass is <b>{{1}}</b>.", blanks:[["$45","MONEY"]], audio:"num_s121.mp3"},
+ {scene:"图书馆", base:"You can keep the book for <b>{{1}}</b> days.", blanks:[["21","DIGIT"]], audio:"num_s122.mp3"},
+ {scene:"餐厅", base:"Your table is at <b>{{1}}</b>.", blanks:[["19:15","TIME"]], audio:"num_s123.mp3"},
+ {scene:"邮局", base:"The parcel weighs <b>{{1}}</b> kilograms.", blanks:[["2","DIGIT"]], audio:"num_s124.mp3"},
+ {scene:"酒店", base:"Breakfast is served until <b>{{1}}</b>.", blanks:[["9:30","TIME"]], audio:"num_s125.mp3"},
+ {scene:"车站", base:"The next train leaves at <b>{{1}}</b>.", blanks:[["16:07","TIME"]], audio:"num_s126.mp3"},
+ {scene:"医院", base:"The doctor will see you at <b>{{1}}</b> — that's five to two in the afternoon.", blanks:[["13:55","TIME"]], audio:"num_s127.mp3"},
+ {scene:"学校", base:"The lecture starts at <b>{{1}}</b> sharp.", blanks:[["18:09","TIME"]], audio:"num_s128.mp3"},
+ {scene:"车站", base:"The last bus leaves at <b>{{1}}</b>.", blanks:[["23:58","TIME"]], audio:"num_s129.mp3"},
+ {scene:"医院", base:"The surgery starts at <b>{{1}}</b> and lasts about <b>{{2}}</b> hours.", blanks:[["8:04","TIME"],["2","DIGIT"]], audio:"num_s130.mp3"},
+ {scene:"学校", base:"Term starts on <b>{{1}}</b>.", blanks:[["2 September","DATE"]], audio:"num_s131.mp3"},
+ {scene:"车站", base:"The ticket is valid until <b>{{1}}</b>.", blanks:[["31 December","DATE"]], audio:"num_s132.mp3"},
+ {scene:"医院", base:"Your vaccination is scheduled for <b>{{1}}</b>.", blanks:[["14 April","DATE"]], audio:"num_s133.mp3"},
+ {scene:"银行", base:"Your statement is sent on <b>{{1}}</b> of every month.", blanks:[["3rd","DATE"]], audio:"num_s134.mp3"},
+ {scene:"学校", base:"Your essay is due on <b>{{1}}</b>.", blanks:[["21 June","DATE"]], audio:"num_s135.mp3"},
+ {scene:"超市", base:"Your total comes to <b>{{1}}</b>.", blanks:[["$13.45","MONEY"]], audio:"num_s136.mp3"},
+ {scene:"餐厅", base:"It's <b>{{1}}</b> per person.", blanks:[["£9.60","MONEY"]], audio:"num_s137.mp3"},
+ {scene:"医院", base:"The medicine costs <b>{{1}}</b>.", blanks:[["$7.85","MONEY"]], audio:"num_s138.mp3"},
+ {scene:"银行", base:"For card issues, call <b>{{1}}</b>.", blanks:[["0800 990 077","CODE"]], audio:"num_s139.mp3"},
+ 
+{scene:"邮局", base:"Your tracking number is <b>{{1}}</b>.", blanks:[["ZD998877","CODE"]], audio:"num_s140.mp3"},
+ {scene:"车站", base:"The bus leaves at <b>{{1}}</b>.", blanks:[["9:15","TIME"]], audio:"num_s141.mp3"},
+ {scene:"超市", base:"The orange juice is <b>{{1}}</b>.", blanks:[["$3.49","MONEY"]], audio:"num_s142.mp3"},
+ {scene:"学校", base:"The seminar starts at <b>{{1}}</b>.", blanks:[["10:15","TIME"]], audio:"num_s143.mp3"},
+ {scene:"医院", base:"Your appointment is on <b>{{1}}</b>.", blanks:[["20 June","DATE"]], audio:"num_s144.mp3"},
+ {scene:"银行", base:"The transfer limit is <b>{{1}}</b> per day.", blanks:[["$2000","MONEY"]], audio:"num_s145.mp3"},
+ {scene:"车站", base:"The return ticket costs <b>{{1}}</b>.", blanks:[["£26","MONEY"]], audio:"num_s146.mp3"},
+ {scene:"学校", base:"The textbook costs <b>{{1}}</b>.", blanks:[["$48","MONEY"]], audio:"num_s147.mp3"},
+ {scene:"机场", base:"Your gate is <b>{{1}}</b>.", blanks:[["9","DIGIT"]], audio:"num_s148.mp3"},
+ {scene:"酒店", base:"Check-out is at <b>{{1}}</b>.", blanks:[["11:00","TIME"]], audio:"num_s149.mp3"},
+ {scene:"医院", base:"The pharmacy opens at <b>{{1}}</b>.", blanks:[["8:30","TIME"]], audio:"num_s150.mp3"},
+ {scene:"健身房", base:"The class fee is <b>{{1}}</b>.", blanks:[["$15","MONEY"]], audio:"num_s151.mp3"},
+ {scene:"餐厅", base:"The lunch special is <b>{{1}}</b>.", blanks:[["$12.50","MONEY"]], audio:"num_s152.mp3"},
+ {scene:"车站", base:"The train now leaves at <b>{{1}}</b>.", blanks:[["14:40","TIME"]], audio:"num_s153.mp3"},
+ {scene:"超市", base:"The price is now <b>{{1}}</b>.", blanks:[["$7.99","MONEY"]], audio:"num_s154.mp3"},
+ {scene:"学校", base:"The deadline has moved to <b>{{1}}</b>.", blanks:[["Friday","WORD"]], audio:"num_s155.mp3"},
+ {scene:"医院", base:"The doctor will see you at <b>{{1}}</b>.", blanks:[["16:30","TIME"]], audio:"num_s156.mp3"},
+ {scene:"银行", base:"The new branch closes at <b>{{1}}</b>.", blanks:[["17:00","TIME"]], audio:"num_s157.mp3"},
+ {scene:"车站", base:"The monthly pass now costs <b>{{1}}</b>.", blanks:[["£85","MONEY"]], audio:"num_s158.mp3"},
+ {scene:"学校", base:"The course now runs for <b>{{1}}</b> weeks.", blanks:[["12","DIGIT"]], audio:"num_s159.mp3"},
+ {scene:"酒店", base:"The room rate is now <b>{{1}}</b>.", blanks:[["$160","MONEY"]], audio:"num_s160.mp3"},
+ {scene:"医院", base:"The test results take <b>{{1}}</b> days.", blanks:[["5","DIGIT"]], audio:"num_s161.mp3"},
+ {scene:"机场", base:"The flight now departs at <b>{{1}}</b>.", blanks:[["19:45","TIME"]], audio:"num_s162.mp3"},
+ {scene:"银行", base:"Your account ends in <b>{{1}}</b>.", blanks:[["8989","DIGIT"]], audio:"num_s163.mp3"},
+ {scene:"车站", base:"Bus <b>{{1}}</b> goes to the city centre.", blanks:[["89","DIGIT"]], audio:"num_s164.mp3"},
+ {scene:"医院", base:"Ward <b>{{1}}</b>, bed <b>{{2}}</b>.", blanks:[["9","DIGIT"],["8","DIGIT"]], audio:"num_s165.mp3"},
+ {scene:"超市", base:"That's <b>{{1}}</b> items.", blanks:[["8","DIGIT"]], audio:"num_s166.mp3"},
+ {scene:"学校", base:"Room <b>{{1}}</b>, page <b>{{2}}</b>.", blanks:[["98","DIGIT"],["89","DIGIT"]], audio:"num_s167.mp3"},
+ {scene:"酒店", base:"Breakfast at <b>{{1}}</b>, room <b>{{2}}</b>.", blanks:[["8:09","TIME"],["90","DIGIT"]], audio:"num_s168.mp3"},
+ {scene:"银行", base:"PIN: <b>{{1}}</b>.", blanks:[["8901","DIGIT"]], audio:"num_s169.mp3"},
+ {scene:"车站", base:"Platform <b>{{1}}</b>, coach <b>{{2}}</b>.", blanks:[["9","DIGIT"],["8","DIGIT"]], audio:"num_s170.mp3"},
+ {scene:"医院", base:"Your weight is <b>{{1}}</b> kilos.", blanks:[["89","DIGIT"]], audio:"num_s171.mp3"},
+ {scene:"邮局", base:"The parcel weighs <b>{{1}}</b> grams.", blanks:[["980","DIGIT"]], audio:"num_s172.mp3"},
+ {scene:"学校", base:"The written exam is on <b>{{1}}</b>.", blanks:[["8 June","DATE"]], audio:"num_s173.mp3"},
+ {scene:"机场", base:"Row <b>{{1}}</b>, seat <b>{{2}}</b>.", blanks:[["19","DIGIT"],["8F","CODE"]], audio:"num_s174.mp3"},
+ {scene:"车站", base:"The fare is <b>{{1}}</b>.", blanks:[["£14","MONEY"]], audio:"num_s175.mp3"},
+ {scene:"医院", base:"Your appointment is at <b>{{1}}</b>.", blanks:[["10:18","TIME"]], audio:"num_s176.mp3"},
+ {scene:"学校", base:"The course code is <b>{{1}}</b>.", blanks:[["EL404","CODE"]], audio:"num_s177.mp3"},
+ {scene:"超市", base:"Your total is <b>{{1}}</b>.", blanks:[["$18.90","MONEY"]], audio:"num_s178.mp3"},
+ {scene:"银行", base:"The transfer arrives on <b>{{1}}</b>.", blanks:[["13 October","DATE"]], audio:"num_s179.mp3"},
+ {scene:"酒店", base:"Room <b>{{1}}</b> on the <b>{{2}}</b> floor.", blanks:[["40","DIGIT"],["14","DIGIT"]], audio:"num_s180.mp3"},
+ {scene:"机场", base:"Flight <b>{{1}}</b>.", blanks:[["BA1354","CODE"]], audio:"num_s181.mp3"},
+ {scene:"餐厅", base:"It's <b>{{1}}</b> per person.", blanks:[["£9.50","MONEY"]], audio:"num_s182.mp3"},
+ {scene:"学校", base:"Your student ID is <b>{{1}}</b>.", blanks:[["20261898","DIGIT"]], audio:"num_s183.mp3"},
+ {scene:"医院", base:"The medicine costs <b>{{1}}</b>.", blanks:[["$7.80","MONEY"]], audio:"num_s184.mp3"},
+ {scene:"健身房", base:"The membership is <b>{{1}}</b> a month.", blanks:[["$38","MONEY"]], audio:"num_s185.mp3"},
+ {scene:"车站", base:"The next train is at <b>{{1}}</b>.", blanks:[["14:50","TIME"]], audio:"num_s186.mp3"},
+ {scene:"车站", base:"With a student card, the ticket is <b>{{1}}</b>.", blanks:[["£9","MONEY"]], audio:"num_s187.mp3"},
+ {scene:"医院", base:"If you pay upfront, it's <b>{{1}}</b>.", blanks:[["$120","MONEY"]], audio:"num_s188.mp3"},
+ {scene:"学校", base:"Unless you apply early, the fee is <b>{{1}}</b>.", blanks:[["$1800","MONEY"]], audio:"num_s189.mp3"},
+ {scene:"酒店", base:"With breakfast included, it's <b>{{1}}</b>.", blanks:[["$145","MONEY"]], audio:"num_s190.mp3"},
+ {scene:"机场", base:"If you check in online, it's <b>{{1}}</b>.", blanks:[["$25","MONEY"]], audio:"num_s191.mp3"},
+ {scene:"超市", base:"Buy two, get <b>{{1}}</b> free.", blanks:[["1","DIGIT"]], audio:"num_s192.mp3"},
+ {scene:"健身房", base:"With a yearly plan, it's <b>{{1}}</b>.", blanks:[["$399","MONEY"]], audio:"num_s193.mp3"},
+ {scene:"学校", base:"The deposit is refundable if you cancel before <b>{{1}}</b>.", blanks:[["1 July","DATE"]], audio:"num_s194.mp3"},
+ {scene:"车站", base:"The journey takes <b>{{1}}</b> minutes.", blanks:[["55","DIGIT"]], audio:"num_s195.mp3"},
+ {scene:"医院", base:"You need to fast for <b>{{1}}</b> hours.", blanks:[["8","DIGIT"]], audio:"num_s196.mp3"},
+ {scene:"学校", base:"The course has <b>{{1}}</b> modules.", blanks:[["6","DIGIT"]], audio:"num_s197.mp3"},
+ {scene:"超市", base:"The total is <b>{{1}}</b>.", blanks:[["$23.40","MONEY"]], audio:"num_s198.mp3"},
+ {scene:"银行", base:"The monthly payment is <b>{{1}}</b>.", blanks:[["£160","MONEY"]], audio:"num_s199.mp3"},
+ {scene:"酒店", base:"The room alone is <b>{{1}}</b> per night.", blanks:[["$98","MONEY"]], audio:"num_s200.mp3"},
+ {scene:"机场", base:"The flight takes <b>{{1}}</b> hours.", blanks:[["11","DIGIT"]], audio:"num_s201.mp3"},
+ {scene:"学校", base:"The main library opens at <b>{{1}}</b>.", blanks:[["8:45","TIME"]], audio:"num_s202.mp3"},
+ {scene:"车站", base:"Departure <b>{{1}}</b>, arrival <b>{{2}}</b>, platform <b>{{3}}</b>.", blanks:[["14:47","TIME"],["16:09","TIME"],["3","DIGIT"]], audio:"num_s203.mp3"},
+ {scene:"学校", base:"The course lasts <b>{{1}}</b> weeks, costs <b>{{2}}</b>, and starts on <b>{{3}}</b>.", blanks:[["12","DIGIT"],["$880","MONEY"],["7 October","DATE"]], audio:"num_s204.mp3"},
+ {scene:"酒店", base:"Booking <b>{{1}}</b> nights from <b>{{2}}</b>, at <b>{{3}}</b> per night.", blanks:[["5","DIGIT"],["18 August","DATE"],["$120","MONEY"]], audio:"num_s205.mp3"},
+ {scene:"医院", base:"Take <b>{{1}}</b> tablets daily for <b>{{2}}</b> days, costing <b>{{3}}</b>.", blanks:[["8","DIGIT"],["9","DIGIT"],["$18.90","MONEY"]], audio:"num_s206.mp3"},
+ {scene:"银行", base:"Account <b>{{1}}</b>, sort code <b>{{2}}</b>, opened on <b>{{3}}</b>.", blanks:[["45678901","DIGIT"],["20-98-17","CODE"],["14 March","DATE"]], audio:"num_s207.mp3"},
+ {scene:"超市", base:"You bought <b>{{1}}</b> items at <b>{{2}}</b> — that's <b>{{3}}</b>.", blanks:[["3","DIGIT"],["$9.99","MONEY"],["$29.97","MONEY"]], audio:"num_s208.mp3"},
+ {scene:"机场", base:"Allowance <b>{{1}}</b> kilos, fee <b>{{2}}</b> per kilo — <b>{{3}}</b> for five extra.", blanks:[["30","DIGIT"],["$18","MONEY"],["$90","MONEY"]], audio:"num_s209.mp3"},
+ {scene:"学校", base:"The exam is on <b>{{1}}</b> at <b>{{2}}</b>, room <b>{{3}}</b>.", blanks:[["2 September","DATE"],["13:30","TIME"],["8","DIGIT"]], audio:"num_s210.mp3"},
+
+];
+
+/* 对话实战：40 段 · 剑桥 Section 1 笔记填空版式（信号词 / 同义替换 / 改口干扰） */
+const DLGS = [
+
+ {t:"Hiring a Public Hall", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Official（男）× Woman（女）· 仿剑桥真题", audio:"num_d01.mp3",
+  example:{pre:"the Main Hall – seats ", ans:"200", post:" and cost £110", type:"DIGIT"},
+  groups:[
+   {h:"Before the event", rows:[
+     {pre:"the Charlton Room – seats ", ans:"100", post:"", type:"DIGIT"},
+     {pre:"Cost of Main Hall for Saturday evening: £", ans:"110", post:" (weekdays £75)", type:"MONEY"},
+     {pre:"+ £250 deposit (", ans:"cash", post:" payment is required)", type:"WORD"},
+     {pre:"Additional charge for use of the ", ans:"kitchen", post:": £25", type:"WORD"}]},
+   {h:"During the event", rows:[
+     {pre:"Will need a ", ans:"music", post:" licence", type:"WORD"},
+     {pre:"The band should use the ", ans:"stage", post:" door at the back", type:"WORD"}]},
+   {h:"After the event", rows:[
+     {pre:"The ", ans:"floors", post:" must be washed (not just swept)", type:"WORD"}]}
+  ]},
+ {t:"Eye Test Appointment", prompt:"Complete the form below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Optometrist（女）× Simon（男）· 同义替换与改口", audio:"num_d02.mp3",
+  groups:[
+   {h:"Personal details", rows:[
+     {pre:"Full name: Simon ", ans:"Anthony", post:" Lee (spelt A-N-T-H-O-N-Y)", type:"WORD"},
+     {pre:"Date of birth: ", ans:"1 June", post:" 1989 (not 21st June)", type:"DATE"},
+     {pre:"Address: University Hall, ", ans:"Adams", post:" Terrace", type:"WORD"},
+     {pre:"Home phone: ", ans:"07700 900123", post:"", type:"CODE"}]},
+   {h:"Eye test", rows:[
+     {pre:"Last eye test: September ", ans:"2006", post:" (changed from 2007)", type:"YEAR"},
+     {pre:"Frames chosen: ", ans:"half", post:" frame", type:"WORD"}]}
+  ]},
+ {t:"Clinic Booking", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Receptionist（女）× Patient（男）· 改口纠正", audio:"num_d03.mp3",
+  groups:[
+   {h:"Appointment", rows:[
+     {pre:"Date: ", ans:"12 June", post:" (first suggested 20th – fully booked)", type:"DATE"},
+     {pre:"Time: ", ans:"10:40", post:" (not quarter past nine)", type:"TIME"},
+     {pre:"Doctor: ", ans:"Smith", post:"", type:"WORD"},
+     {pre:"Room: ", ans:"204", post:", second floor", type:"DIGIT"}]},
+   {h:"Contact", rows:[
+     {pre:"Phone: ", ans:"07700 900123", post:"", type:"CODE"}]}
+  ]},
+ {t:"Railway Ticket", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Clerk（男）× Passenger（女）· 13/3 辨音", audio:"num_d04.mp3",
+  groups:[
+   {h:"Journey", rows:[
+     {pre:"Destination: Manchester – single fare £", ans:"12.80", post:"", type:"MONEY"},
+     {pre:"Train time: ", ans:"14:07", post:"", type:"TIME"},
+     {pre:"Platform: ", ans:"3", post:" (not thirteen)", type:"DIGIT"},
+     {pre:"Return ticket: £", ans:"24.60", post:"", type:"MONEY"},
+     {pre:"Payment: ", ans:"card", post:" (cash not accepted at this window)", type:"WORD"}]}
+  ]},
+ {t:"Airport Check-in", prompt:"Complete the form below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Agent（女）× Passenger（男）", audio:"num_d05.mp3",
+  groups:[
+   {h:"Flight", rows:[
+     {pre:"Flight number: ", ans:"AC118", post:" to Toronto", type:"CODE"},
+     {pre:"Boarding time: ", ans:"14:50", post:"", type:"TIME"},
+     {pre:"Gate: ", ans:"22", post:" (not Gate 12)", type:"DIGIT"},
+     {pre:"Terminal: ", ans:"3", post:", departures level", type:"DIGIT"},
+     {pre:"Checked bags: ", ans:"2", post:"", type:"DIGIT"}]}
+  ]},
+ {t:"Hotel Booking", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Receptionist（男）× Guest（女）", audio:"num_d06.mp3",
+  groups:[
+   {h:"Reservation", rows:[
+     {pre:"Room: ", ans:"412", post:" on the fourth floor", type:"DIGIT"},
+     {pre:"Rate per night: $", ans:"145", post:" (includes breakfast)", type:"MONEY"},
+     {pre:"Breakfast served until ", ans:"10:15", post:"", type:"TIME"},
+     {pre:"Check-out by ", ans:"11:00", post:"", type:"TIME"},
+     {pre:"Confirmation code: ", ans:"BW4821", post:"", type:"CODE"}]}
+  ]},
+ {t:"Opening a Bank Account", prompt:"Complete the form below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Bank Clerk（女）× Customer（男）· 干扰金额", audio:"num_d07.mp3",
+  groups:[
+   {h:"Account details", rows:[
+     {pre:"Phone: ", ans:"07955 810 447", post:"", type:"CODE"},
+     {pre:"Monthly fee: £", ans:"4", post:" (first year free)", type:"MONEY"},
+     {pre:"Opening deposit: $", ans:"100", post:" (no minimum required)", type:"MONEY"},
+     {pre:"Account number: ", ans:"00879012", post:"", type:"DIGIT"},
+     {pre:"Branch closes at ", ans:"5:45", post:"", type:"TIME"}]}
+  ]},
+ {t:"Library Registration", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Librarian（男）× Student（女）", audio:"num_d08.mp3",
+  groups:[
+   {h:"Borrowing", rows:[
+     {pre:"Library card number: ", ans:"482109", post:"", type:"DIGIT"},
+     {pre:"Book due back: ", ans:"12 June", post:" (this Friday)", type:"DATE"},
+     {pre:"Renewal: another ", ans:"14", post:" days, free", type:"DIGIT"},
+     {pre:"Late fine: £", ans:"0.50", post:" per day", type:"MONEY"},
+     {pre:"Opens tomorrow at ", ans:"9:00", post:"", type:"TIME"}]}
+  ]},
+ {t:"Gym Membership", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Receptionist（女）× Member（男）", audio:"num_d09.mp3",
+  groups:[
+   {h:"Membership", rows:[
+     {pre:"Annual fee: $", ans:"240", post:" (half-price joining offer)", type:"MONEY"},
+     {pre:"Start date: ", ans:"5 May", post:"", type:"DATE"},
+     {pre:"Opens until ", ans:"10:30", post:" on weekdays", type:"TIME"},
+     {pre:"Locker number: ", ans:"27", post:", ground floor", type:"DIGIT"},
+     {pre:"Free personal training sessions: ", ans:"1", post:"", type:"DIGIT"}]}
+  ]},
+ {t:"Online Order", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Customer Service（男）× Customer（女）· 退款改口", audio:"num_d10.mp3",
+  groups:[
+   {h:"Return", rows:[
+     {pre:"Order number: ", ans:"83712904", post:"", type:"DIGIT"},
+     {pre:"Refund within ", ans:"5", post:" working days (first said 7)", type:"DIGIT"},
+     {pre:"Larger size: $", ans:"8", post:" more", type:"MONEY"},
+     {pre:"Courier pickup: ", ans:"Friday", post:"", type:"WORD"},
+     {pre:"Postcode: ", ans:"KT2 5RD", post:"", type:"CODE"}]}
+  ]},
+ {t:"Travel Insurance", prompt:"Complete the form below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Agent（女）× Traveller（男）", audio:"num_d11.mp3",
+  groups:[
+   {h:"Policy", rows:[
+     {pre:"Policy number: ", ans:"PL20398", post:"", type:"CODE"},
+     {pre:"Premium: £", ans:"45.50", post:" for the year", type:"MONEY"},
+     {pre:"Valid until ", ans:"30 November", post:"", type:"DATE"},
+     {pre:"Emergency phone: ", ans:"0800 780 220", post:"", type:"CODE"},
+     {pre:"Lost luggage cover: $", ans:"500", post:"", type:"MONEY"}]}
+  ]},
+ {t:"Student Accommodation", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Housing Officer（女）× Student（男）· 押金改口", audio:"num_d12.mp3",
+  groups:[
+   {h:"Hall of residence", rows:[
+     {pre:"Room: ", ans:"508", post:", fifth floor", type:"DIGIT"},
+     {pre:"Rent: £", ans:"95.50", post:" per week", type:"MONEY"},
+     {pre:"Deposit: £", ans:"200", post:" (not £250 – student rate)", type:"MONEY"},
+     {pre:"Move-in date: ", ans:"1 September", post:"", type:"DATE"},
+     {pre:"Contract: ", ans:"12", post:" months", type:"DIGIT"}]}
+  ]},
+ {t:"Restaurant Reservation", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Hostess（女）× Customer（男）· 时间改口", audio:"num_d13.mp3",
+  groups:[
+   {h:"Booking", rows:[
+     {pre:"Number of people: ", ans:"6", post:"", type:"DIGIT"},
+     {pre:"Time: ", ans:"7:30", post:" (changed from 7:00)", type:"TIME"},
+     {pre:"Date: ", ans:"18th", post:" Friday", type:"DATE"},
+     {pre:"Table by the ", ans:"window", post:"", type:"WORD"},
+     {pre:"Phone: ", ans:"020 7845 6633", post:"", type:"CODE"},
+     {pre:"Deposit: $", ans:"5", post:" per person", type:"MONEY"}]}
+  ]},
+ {t:"Car Rental", prompt:"Complete the form below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Clerk（女）× Driver（男）· 保险加价", audio:"num_d14.mp3",
+  groups:[
+   {h:"Rental", rows:[
+     {pre:"Rental days: ", ans:"4", post:"", type:"DIGIT"},
+     {pre:"Rate: $", ans:"38.50", post:" per day", type:"MONEY"},
+     {pre:"Extra insurance: £", ans:"10", post:" per day (optional)", type:"MONEY"},
+     {pre:"Return by ", ans:"6:00", post:" (not 6:30) on the last day", type:"TIME"},
+     {pre:"Car model: ", ans:"Focus", post:" (silver)", type:"WORD"}]}
+  ]},
+ {"t":"Hair Salon", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Receptionist（女）× Customer（男）", "audio":"num_d15.mp3",
+  "groups":[
+   {"h":"Booking", "rows":[
+     {"pre":"Appointment: ", "ans":"3 May", "post":" at 2:30", "type":"DATE"},
+     {"pre":"Stylist: ", "ans":"Lisa", "post":" (not Mark)", "type":"WORD"},
+     {"pre":"Service: cut and ", "ans":"wash", "post":"", "type":"WORD"},
+     {"pre":"Price: $", "ans":"45", "post":"", "type":"MONEY"},
+     {"pre":"Phone: ", "ans":"020 7316 8820", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"Dental Clinic", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Receptionist（女）× Patient（男）· 时间改口", "audio":"num_d16.mp3",
+  "groups":[
+   {"h":"Appointment", "rows":[
+     {"pre":"Date: ", "ans":"9 September", "post":"", "type":"DATE"},
+     {"pre":"Time: ", "ans":"11:15", "post":" (changed from 11:00)", "type":"TIME"},
+     {"pre":"Treatment: ", "ans":"filling", "post":"", "type":"WORD"},
+     {"pre":"Fee: £", "ans":"85", "post":"", "type":"MONEY"},
+     {"pre":"Dental card: ", "ans":"D4482", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"Cinema Booking", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Clerk（女）× Customer（男）", "audio":"num_d17.mp3",
+  "groups":[
+   {"h":"Tickets", "rows":[
+     {"pre":"Film: The ", "ans":"Silent", "post":" Forest", "type":"WORD"},
+     {"pre":"Show time: ", "ans":"19:45", "post":"", "type":"TIME"},
+     {"pre":"Seats: Row ", "ans":"7", "post":", seats 12-13", "type":"DIGIT"},
+     {"pre":"Tickets: ", "ans":"2", "post":" adult", "type":"DIGIT"},
+     {"pre":"Price: $", "ans":"24", "post":"", "type":"MONEY"},
+     {"pre":"Booking ref: ", "ans":"CF3321", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"Pet Clinic", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Receptionist（女）× Owner（男）", "audio":"num_d18.mp3",
+  "groups":[
+   {"h":"Visit", "rows":[
+     {"pre":"Pet: ", "ans":"Milo", "post":", a cat", "type":"WORD"},
+     {"pre":"Appointment: ", "ans":"4:20", "post":"", "type":"TIME"},
+     {"pre":"Weight: ", "ans":"4.5", "post":" kg", "type":"DIGIT"},
+     {"pre":"Vaccination: £", "ans":"28", "post":"", "type":"MONEY"},
+     {"pre":"Owner phone: ", "ans":"07712 300 886", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"Laundry Service", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Attendant（女）× Customer（男）", "audio":"num_d19.mp3",
+  "groups":[
+   {"h":"Drop-off", "rows":[
+     {"pre":"Items: ", "ans":"8", "post":" shirts", "type":"DIGIT"},
+     {"pre":"Collection: ", "ans":"Friday", "post":"", "type":"WORD"},
+     {"pre":"Cost: $", "ans":"32", "post":"", "type":"MONEY"},
+     {"pre":"Membership: ", "ans":"L5209", "post":"", "type":"CODE"},
+     {"pre":"Closes at ", "ans":"6:45", "post":"", "type":"TIME"},
+
+   ]},
+  ]},
+ {"t":"Car Repair", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Mechanic（男）× Customer（女）· 价格改口", "audio":"num_d20.mp3",
+  "groups":[
+   {"h":"Repair", "rows":[
+     {"pre":"Registration: ", "ans":"KY17 XFD", "post":"", "type":"CODE"},
+     {"pre":"Problem: ", "ans":"brakes", "post":"", "type":"WORD"},
+     {"pre":"Pick-up: ", "ans":"14 March", "post":"", "type":"DATE"},
+     {"pre":"Estimate: £", "ans":"180", "post":" (not £160)", "type":"MONEY"},
+     {"pre":"Call back by ", "ans":"5:30", "post":"", "type":"TIME"},
+
+   ]},
+  ]},
+ {"t":"Parcel Pick-up", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Courier（男）× Resident（女）", "audio":"num_d21.mp3",
+  "groups":[
+   {"h":"Collection", "rows":[
+     {"pre":"Pick-up code: ", "ans":"4827", "post":"", "type":"DIGIT"},
+     {"pre":"Time: between ", "ans":"3:00", "post":" and 5:00", "type":"TIME"},
+     {"pre":"Parcel: ", "ans":"2", "post":" boxes", "type":"DIGIT"},
+     {"pre":"Address: ", "ans":"12", "post":" Park Road", "type":"DIGIT"},
+     {"pre":"Phone: ", "ans":"07453 992 110", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"Utility Bill", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Agent（女）× Customer（男）· 金额改口", "audio":"num_d22.mp3",
+  "groups":[
+   {"h":"Account", "rows":[
+     {"pre":"Account number: ", "ans":"660913", "post":"", "type":"DIGIT"},
+     {"pre":"Bill amount: £", "ans":"128", "post":" (not £138)", "type":"MONEY"},
+     {"pre":"Due date: ", "ans":"28 April", "post":"", "type":"DATE"},
+     {"pre":"Plan: ", "ans":"direct debit", "post":"", "type":"WORD"},
+     {"pre":"Helpline: ", "ans":"0800 044 771", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"TV Subscription", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Agent（男）× Customer（女）", "audio":"num_d23.mp3",
+  "groups":[
+   {"h":"Package", "rows":[
+     {"pre":"Package: ", "ans":"sports", "post":"", "type":"WORD"},
+     {"pre":"Monthly fee: $", "ans":"35", "post":"", "type":"MONEY"},
+     {"pre":"Start date: ", "ans":"1 June", "post":"", "type":"DATE"},
+     {"pre":"Channels: ", "ans":"120", "post":"", "type":"DIGIT"},
+     {"pre":"Contract: ", "ans":"12", "post":" months", "type":"DIGIT"},
+     {"pre":"Ref: ", "ans":"TV7712", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"Furniture Delivery", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Dispatcher（女）× Customer（男）· 楼层改口", "audio":"num_d24.mp3",
+  "groups":[
+   {"h":"Delivery", "rows":[
+     {"pre":"Delivery date: ", "ans":"17 July", "post":"", "type":"DATE"},
+     {"pre":"Time slot: ", "ans":"2:00", "post":"-4:00 pm", "type":"TIME"},
+     {"pre":"Floor: ", "ans":"4", "post":" (not 5th – no lift to 5)", "type":"DIGIT"},
+     {"pre":"Items: sofa and ", "ans":"table", "post":"", "type":"WORD"},
+     {"pre":"Phone: ", "ans":"07790 551 823", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"Estate Agent", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Agent（女）× Renter（男）", "audio":"num_d25.mp3",
+  "groups":[
+   {"h":"Viewing", "rows":[
+     {"pre":"Viewing: ", "ans":"6:00", "post":" on Tuesday", "type":"TIME"},
+     {"pre":"Rent: £", "ans":"780", "post":" per month", "type":"MONEY"},
+     {"pre":"Deposit: £", "ans":"900", "post":"", "type":"MONEY"},
+     {"pre":"Address: ", "ans":"24", "post":" Elm Road", "type":"DIGIT"},
+     {"pre":"Available from: ", "ans":"1 October", "post":"", "type":"DATE"},
+     {"pre":"Ref: ", "ans":"EA5038", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"Driving School", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Instructor（男）× Learner（女）· 价格改口", "audio":"num_d26.mp3",
+  "groups":[
+   {"h":"Course", "rows":[
+     {"pre":"Package: ", "ans":"intensive", "post":" course", "type":"WORD"},
+     {"pre":"Hours: ", "ans":"20", "post":"", "type":"DIGIT"},
+     {"pre":"Fee: $", "ans":"640", "post":" (not $700)", "type":"MONEY"},
+     {"pre":"Start: ", "ans":"8 April", "post":"", "type":"DATE"},
+     {"pre":"Test date: ", "ans":"9 May", "post":"", "type":"DATE"},
+     {"pre":"Phone: ", "ans":"0141 226 9040", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"Swim Centre", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Receptionist（女）× Member（男）", "audio":"num_d27.mp3",
+  "groups":[
+   {"h":"Membership", "rows":[
+     {"pre":"Card number: ", "ans":"SW22014", "post":"", "type":"CODE"},
+     {"pre":"Opens at ", "ans":"6:30", "post":"", "type":"TIME"},
+     {"pre":"Lesson: ", "ans":"7:00", "post":" Tuesday", "type":"TIME"},
+     {"pre":"Lane: ", "ans":"3", "post":" (fast lane)", "type":"DIGIT"},
+     {"pre":"Monthly fee: $", "ans":"18", "post":"", "type":"MONEY"},
+
+   ]},
+  ]},
+ {"t":"Birthday Party", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Manager（女）× Parent（男）· 人数改口", "audio":"num_d28.mp3",
+  "groups":[
+   {"h":"Booking", "rows":[
+     {"pre":"Date: ", "ans":"14 June", "post":"", "type":"DATE"},
+     {"pre":"Time: ", "ans":"2:30", "post":"", "type":"TIME"},
+     {"pre":"Children: ", "ans":"12", "post":" (not 10)", "type":"DIGIT"},
+     {"pre":"Package: ", "ans":"gold", "post":"", "type":"WORD"},
+     {"pre":"Cost: $", "ans":"180", "post":"", "type":"MONEY"},
+     {"pre":"Phone: ", "ans":"0161 498 2033", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"Wedding Venue", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Coordinator（女）× Couple（男）· 定金改口", "audio":"num_d29.mp3",
+  "groups":[
+   {"h":"Venue", "rows":[
+     {"pre":"Date: ", "ans":"22 August", "post":"", "type":"DATE"},
+     {"pre":"Guests: ", "ans":"90", "post":"", "type":"DIGIT"},
+     {"pre":"Venue fee: £", "ans":"1500", "post":"", "type":"MONEY"},
+     {"pre":"Deposit: £", "ans":"400", "post":" (not £500)", "type":"MONEY"},
+     {"pre":"Room: ", "ans":"Orchard", "post":"", "type":"WORD"},
+     {"pre":"Phone: ", "ans":"0121 733 5608", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"Volunteer Sign-up", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Coordinator（女）× Volunteer（男）", "audio":"num_d30.mp3",
+  "groups":[
+   {"h":"Volunteering", "rows":[
+     {"pre":"Role: ", "ans":"guide", "post":"", "type":"WORD"},
+     {"pre":"Shift: ", "ans":"10:00", "post":"-2:00", "type":"TIME"},
+     {"pre":"Training: ", "ans":"18 June", "post":"", "type":"DATE"},
+     {"pre":"Contact: ", "ans":"Mrs Lee", "post":"", "type":"WORD"},
+     {"pre":"Phone: ", "ans":"07700 512 366", "post":"", "type":"CODE"},
+     {"pre":"Badge number: ", "ans":"305", "post":"", "type":"DIGIT"},
+
+   ]},
+  ]},
+ {"t":"Tourist Information", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Officer（女）× Visitor（男）", "audio":"num_d31.mp3",
+  "groups":[
+   {"h":"Visit", "rows":[
+     {"pre":"Castle opens at ", "ans":"9:30", "post":"", "type":"TIME"},
+     {"pre":"Ticket: $", "ans":"12", "post":" (student $8)", "type":"MONEY"},
+     {"pre":"Guided tour: ", "ans":"11:00", "post":"", "type":"TIME"},
+     {"pre":"Tour lasts ", "ans":"75", "post":" minutes", "type":"DIGIT"},
+     {"pre":"Book on: ", "ans":"0141 552 3309", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"Museum Booking", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Clerk（男）× Visitor（女）", "audio":"num_d32.mp3",
+  "groups":[
+   {"h":"Visit", "rows":[
+     {"pre":"Date: ", "ans":"5 October", "post":"", "type":"DATE"},
+     {"pre":"Visitors: ", "ans":"4", "post":" (2 adults, 2 children)", "type":"DIGIT"},
+     {"pre":"Entry: $", "ans":"36", "post":"", "type":"MONEY"},
+     {"pre":"Exhibition: ", "ans":"Egypt", "post":"", "type":"WORD"},
+     {"pre":"Confirmation: ", "ans":"MU2041", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"Repeat Prescription", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Pharmacist（男）× Customer（女）· 价格改口", "audio":"num_d33.mp3",
+  "groups":[
+   {"h":"Collection", "rows":[
+     {"pre":"Prescription: ", "ans":"48715", "post":"", "type":"DIGIT"},
+     {"pre":"Cost: £", "ans":"9.75", "post":" (not £7.75)", "type":"MONEY"},
+     {"pre":"Ready at ", "ans":"4:15", "post":"", "type":"TIME"},
+     {"pre":"Medicine: ", "ans":"tablets", "post":"", "type":"WORD"},
+     {"pre":"Repeat on: ", "ans":"27 June", "post":"", "type":"DATE"},
+     {"pre":"Phone: ", "ans":"020 7788 4455", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"Pet Grooming", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Groomer（女）× Owner（男）", "audio":"num_d34.mp3",
+  "groups":[
+   {"h":"Service", "rows":[
+     {"pre":"Appointment: ", "ans":"10:45", "post":"", "type":"TIME"},
+     {"pre":"Service: ", "ans":"bath", "post":" and trim", "type":"WORD"},
+     {"pre":"Price: $", "ans":"55", "post":"", "type":"MONEY"},
+     {"pre":"Pick-up: ", "ans":"3:00", "post":"", "type":"TIME"},
+     {"pre":"Phone: ", "ans":"07731 220 447", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"Photo Studio", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Photographer（男）× Client（女）· 时间改口", "audio":"num_d35.mp3",
+  "groups":[
+   {"h":"Shoot", "rows":[
+     {"pre":"Shoot date: ", "ans":"19 July", "post":"", "type":"DATE"},
+     {"pre":"Time: ", "ans":"2:30", "post":" (not 2:00)", "type":"TIME"},
+     {"pre":"Package: ", "ans":"family", "post":"", "type":"WORD"},
+     {"pre":"Price: $", "ans":"149", "post":"", "type":"MONEY"},
+     {"pre":"Location: ", "ans":"Park", "post":" gardens", "type":"WORD"},
+     {"pre":"Phone: ", "ans":"020 8612 3390", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"Moving Service", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Dispatcher（女）× Customer（男）· 价格改口", "audio":"num_d36.mp3",
+  "groups":[
+   {"h":"Move", "rows":[
+     {"pre":"Moving date: ", "ans":"13 August", "post":"", "type":"DATE"},
+     {"pre":"Fee: £", "ans":"320", "post":" (not £350)", "type":"MONEY"},
+     {"pre":"Crew: ", "ans":"3", "post":" men", "type":"DIGIT"},
+     {"pre":"From floor: ", "ans":"2", "post":" to floor 6", "type":"DIGIT"},
+     {"pre":"Phone: ", "ans":"01704 553 902", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"House Cleaning", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Manager（女）× Client（男）", "audio":"num_d37.mp3",
+  "groups":[
+   {"h":"Booking", "rows":[
+     {"pre":"Cleaning day: ", "ans":"Saturday", "post":"", "type":"WORD"},
+     {"pre":"Start time: ", "ans":"9:00", "post":"", "type":"TIME"},
+     {"pre":"Duration: ", "ans":"4", "post":" hours", "type":"DIGIT"},
+     {"pre":"Cost: $", "ans":"88", "post":"", "type":"MONEY"},
+     {"pre":"Extras: ", "ans":"oven", "post":" (extra $15)", "type":"WORD"},
+     {"pre":"Phone: ", "ans":"07428 661 504", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"Locksmith", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Technician（男）× Customer（女）· 时间改口", "audio":"num_d38.mp3",
+  "groups":[
+   {"h":"Call-out", "rows":[
+     {"pre":"Service: ", "ans":"lock", "post":" change", "type":"WORD"},
+     {"pre":"Arrive at ", "ans":"5:45", "post":" (not 6:15)", "type":"TIME"},
+     {"pre":"Fee: £", "ans":"75", "post":"", "type":"MONEY"},
+     {"pre":"Address: ", "ans":"38", "post":" Cedar Lane", "type":"DIGIT"},
+     {"pre":"Phone: ", "ans":"020 7387 5510", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"Community Class", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Coordinator（女）× Student（男）", "audio":"num_d39.mp3",
+  "groups":[
+   {"h":"Course", "rows":[
+     {"pre":"Course: ", "ans":"pottery", "post":"", "type":"WORD"},
+     {"pre":"Starts: ", "ans":"10 September", "post":"", "type":"DATE"},
+     {"pre":"Time: ", "ans":"7:30", "post":"", "type":"TIME"},
+     {"pre":"Fee: $", "ans":"60", "post":" (8 weeks)", "type":"MONEY"},
+     {"pre":"Room: ", "ans":"12", "post":", community centre", "type":"DIGIT"},
+     {"pre":"Phone: ", "ans":"0161 297 4021", "post":"", "type":"CODE"},
+
+   ]},
+  ]},
+ {"t":"Lost Property", "prompt":"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  "scene":"Officer（女）× Passenger（男）· 描述改口", "audio":"num_d40.mp3",
+  "groups":[
+   {"h":"Report", "rows":[
+     {"pre":"Report number: ", "ans":"33908", "post":"", "type":"DIGIT"},
+     {"pre":"Item: ", "ans":"backpack", "post":" (not suitcase)", "type":"WORD"},
+     {"pre":"Bus route: ", "ans":"17", "post":"", "type":"DIGIT"},
+     {"pre":"Left at: ", "ans":"8:40", "post":"", "type":"TIME"},
+     {"pre":"Phone: ", "ans":"020 8892 1165", "post":"", "type":"CODE"},
+     {"pre":"Collect by: ", "ans":"Friday", "post":"", "type":"WORD"},
+
+   ]},
+  ]},
+ {t:"Bus Station Ticket", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Clerk（男）× Passenger（女）· 13/30 辨音 + 站台干扰", audio:"num_d41.mp3",
+  groups:[{"h":"Journey","rows":[{"pre":"Destination: Brighton – single fare £","ans":"13.30","post":" (not £30)","type":"MONEY"},{"pre":"Departure time: ","ans":"14:08","post":"","type":"TIME"},{"pre":"Platform: ","ans":"9","post":" (nine, not nineteen)","type":"DIGIT"},{"pre":"Return ticket: £","ans":"26.60","post":"","type":"MONEY"},{"pre":"Changes: ","ans":"2","post":"","type":"DIGIT"},{"pre":"Arrival: ","ans":"15:52","post":"","type":"TIME"}]}]},
+ {t:"Hospital Registration", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Receptionist（女）× Patient（男）· 40/14 辨音 + 金额改口", audio:"num_d42.mp3",
+  groups:[{"h":"Registration","rows":[{"pre":"Insurance number: ","ans":"890912","post":"","type":"DIGIT"},{"pre":"Consulting Room: ","ans":"40","post":" (not 14)","type":"DIGIT"},{"pre":"Registration fee: $","ans":"38","post":" (first said $48)","type":"MONEY"},{"pre":"Appointment time: ","ans":"10:18","post":"","type":"TIME"},{"pre":"Medical record: ","ans":"A-2098","post":"","type":"CODE"},{"pre":"Follow-up: ","ans":"19 August","post":"","type":"DATE"}]}]},
+ {t:"Supermarket Checkout", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Cashier（女）× Customer（男）· 折扣改口 + 找零", audio:"num_d43.mp3",
+  groups:[{"h":"Payment","rows":[{"pre":"Total: $","ans":"54.90","post":"","type":"MONEY"},{"pre":"Discount: ","ans":"20","post":"% (first said 12%)","type":"DIGIT"},{"pre":"Loyalty card: ","ans":"7712","post":"","type":"DIGIT"},{"pre":"Change: $","ans":"15.10","post":"","type":"MONEY"},{"pre":"Receipt number: ","ans":"089","post":"","type":"DIGIT"},{"pre":"Closes at ","ans":"9:45","post":"","type":"TIME"}]}]},
+ {t:"Pizza Delivery Order", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Pizza Shop（男）× Customer（女）· 时间改口 + 金额 + 地址门牌", audio:"num_d44.mp3",
+  groups:[{"h":"Order","rows":[{"pre":"Phone: ","ans":"07700 900 188","post":"","type":"CODE"},{"pre":"Address: No. ","ans":"89","post":", Flat 2","type":"DIGIT"},{"pre":"Large pizza: $","ans":"13.90","post":"","type":"MONEY"},{"pre":"Medium pizza: $","ans":"9.50","post":"","type":"MONEY"},{"pre":"Delivery time: ","ans":"6:40","post":" (not 6:30)","type":"TIME"},{"pre":"Order number: ","ans":"PZ4889","post":"","type":"CODE"},{"pre":"Postcode: ","ans":"E14 8JJ","post":"","type":"CODE"}]}]},
+ {t:"Airport Lost Luggage", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Agent（女）× Passenger（男）· 航班改口 + 描述 + 赔偿上限", audio:"num_d45.mp3",
+  groups:[{"h":"Lost baggage report","rows":[{"pre":"Flight number: ","ans":"BA1354","post":" (changed from BA1345)","type":"CODE"},{"pre":"Boarding gate: ","ans":"40","post":"","type":"DIGIT"},{"pre":"Suitcase colour: ","ans":"dark blue","post":", four wheels","type":"WORD"},{"pre":"Phone: ","ans":"0798 264 8730","post":"","type":"CODE"},{"pre":"Compensation limit: $","ans":"800","post":"","type":"MONEY"},{"pre":"Hotline: ","ans":"0800 119 202","post":", 24 hours","type":"CODE"}]}]},
+ {t:"School Enrolment", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Advisor（女）× Student（男）· 学费千位 + 房间号 + 学号", audio:"num_d46.mp3",
+  groups:[{"h":"Enrolment","rows":[{"pre":"Course code: ","ans":"EL404","post":" (four oh four)","type":"CODE"},{"pre":"Tuition: $","ans":"2980","post":"","type":"MONEY"},{"pre":"Dormitory: Building ","ans":"8","post":", Room 809","type":"DIGIT"},{"pre":"Term starts: ","ans":"18 September","post":"","type":"DATE"},{"pre":"Student ID: ","ans":"20261189","post":"","type":"DIGIT"},{"pre":"Library: ","ans":"8:15","post":"-21:00","type":"TIME"}]}]},
+ {t:"Fitness Class Booking", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Receptionist（女）× Member（男）· 7:15/7:50 + 18/80 + 金额", audio:"num_d47.mp3",
+  groups:[{"h":"Class booking","rows":[{"pre":"Class time: ","ans":"7:15","post":" (changed from 7:50)","type":"TIME"},{"pre":"Max participants: ","ans":"18","post":" (eighteen, not eighty)","type":"DIGIT"},{"pre":"Class fee: $","ans":"12","post":" per session","type":"MONEY"},{"pre":"Membership number: ","ans":"89012","post":"","type":"DIGIT"},{"pre":"Locker: ","ans":"49","post":"","type":"DIGIT"},{"pre":"Monthly membership: $","ans":"80","post":"","type":"MONEY"}]}]},
+ {t:"Interview Arrangement", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Secretary（女）× Candidate（男）· 日期 + 房间 + 证件尾号", audio:"num_d48.mp3",
+  groups:[{"h":"Interview","rows":[{"pre":"Date: ","ans":"24 October","post":"","type":"DATE"},{"pre":"Time: ","ans":"9:45","post":"","type":"TIME"},{"pre":"Room: ","ans":"B-409","post":"","type":"CODE"},{"pre":"Copies of CV: ","ans":"2","post":"","type":"DIGIT"},{"pre":"ID last four digits: ","ans":"1990","post":"","type":"DIGIT"},{"pre":"Contact: Ms ","ans":"Park","post":"","type":"WORD"},{"pre":"Phone: ","ans":"020 7946 0818","post":"",
+"type":"CODE"}]}]},
+
+ {t:"Bank Account Opening", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Clerk（女）× Customer（男）· 千位金额 + 改口 + 日期", audio:"num_d49.mp3",
+  groups:[{"h":"Account details","rows":[{"pre":"Initial deposit: $","ans":"500","post":" (not $900)","type":"MONEY"},{"pre":"Account number: ","ans":"09451837","post":"","type":"DIGIT"},{"pre":"Monthly fee: $","ans":"8","post":"","type":"MONEY"},{"pre":"Card PIN: ","ans":"8097","post":"","type":"DIGIT"},{"pre":"Opened on: ","ans":"3 November","post":"","type":"DATE"},{"pre":"Branch: ","ans":"Highgate","post":", open 8:30–16:00","type":"WORD"},{"pre":"Hotline: ","ans":"0800 908 110","post":"","type":"CODE"}]}]},
+ {t:"Reschedule Appointment", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Receptionist（女）× Patient（男）· 日期改口 + 时间对比", audio:"num_d50.mp3",
+  groups:[{"h":"New appointment","rows":[{"pre":"Original date: ","ans":"16 June","post":"","type":"DATE"},{"pre":"New date: ","ans":"19 June","post":" (not 9 June)","type":"DATE"},{"pre":"New time: ","ans":"14:20","post":" (was 14:40)","type":"TIME"},{"pre":"Doctor: Dr ","ans":"Cheng","post":"","type":"WORD"},{"pre":"Room: ","ans":"B-208","post":"","type":"CODE"},{"pre":"Call back in: ","ans":"48","post":" hours","type":"DIGIT"}]}]},
+ {t:"Flat Viewing", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Landlord（女）× Renter（男）· 租金改口 + 押金 + 日期", audio:"num_d51.mp3",
+  groups:[{"h":"Flat details","rows":[{"pre":"Rent: £","ans":"890","post":" per month (was £980)","type":"MONEY"},{"pre":"Deposit: £","ans":"1600","post":"","type":"MONEY"},{"pre":"Address: ","ans":"19","post":" Park Road","type":"DIGIT"},{"pre":"Floor: ","ans":"3rd","post":"","type":"DIGIT"},{"pre":"Available from: ","ans":"1 August","post":"","type":"DATE"},{"pre":"Bills: £","ans":"85","post":" per month","type":"MONEY"}]}]},
+ {t:"Travel Agency Booking", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Agent（男）× Customer（女）· 航班改口 + 时长 + 费用", audio:"num_d52.mp3",
+  groups:[{"h":"Tour package","rows":[{"pre":"Flight: ","ans":"AF1908","post":" (not AF1980)","type":"CODE"},{"pre":"Departure: ","ans":"8:50","post":"","type":"TIME"},{"pre":"Flight time: ","ans":"3","post":" hours 40 min","type":"DIGIT"},{"pre":"Hotel: ","ans":"Grand","post":" 4-star","type":"WORD"},{"pre":"Package price: $","ans":"1890","post":" per person","type":"MONEY"},{"pre":"Book before: ","ans":"30 April","post":"","type":"DATE"}]}]},
+ {t:"Parcel Collection", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Courier（男）× Customer（女）· 编号 + 重量 + 时间窗口", audio:"num_d53.mp3",
+  groups:[{"h":"Parcel collection","rows":[{"pre":"Tracking number: ","ans":"RY898091","post":"","type":"CODE"},{"pre":"Weight: ","ans":"8.5","post":" kilos","type":"DIGIT"},{"pre":"Size: ","ans":"medium","post":" box","type":"WORD"},{"pre":"Pickup window: ","ans":"14:00–16:00","post":"","type":"TIME"},{"pre":"ID last 4: ","ans":"1998","post":"","type":"DIGIT"},{"pre":"Signature: ","ans":"J. Moore","post":"","type":"WORD"}]}]},
+ {t:"Library Card", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Librarian（女）× Student（男）· 学号 + 期限 + 罚款", audio:"num_d54.mp3",
+  groups:[{"h":"Library membership","rows":[{"pre":"Student ID: ","ans":"2026 1890","post":"","type":"DIGIT"},{"pre":"Card number: ","ans":"L-0089","post":"","type":"CODE"},{"pre":"Valid for: ","ans":"2","post":" years","type":"DIGIT"},{"pre":"Book limit: ","ans":"8","post":" items","type":"DIGIT"},{"pre":"Loan period: ","ans":"21","post":" days","type":"DIGIT"},{"pre":"Late fine: $","ans":"0.50","post":" per day","type":"MONEY"}]}]},
+ {t:"Driving School Enrolment", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Instructor（男）× Learner（女）· 价格改口 + 课时 + 日期", audio:"num_d55.mp3",
+  groups:[{"h":"Course booking","rows":[{"pre":"Package: ","ans":"intensive","post":"","type":"WORD"},{"pre":"Hours: ","ans":"30","post":" (not 13)","type":"DIGIT"},{"pre":"Fee: $","ans":"1290","post":"","type":"MONEY"},{"pre":"First lesson: ","ans":"18 May","post":"","type":"DATE"},{"pre":"Lesson time: ","ans":"9:15","post":"","type":"TIME"},{"pre":"Test date: ","ans":"28 June","post":"","type":"DATE"}]}]},
+ {t:"Insurance Claim", prompt:"Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+  scene:"Agent（女）× Client（男）· 保单号 + 金额改口 + 日期", audio:"num_d56.mp3",
+  groups:[{"h":"Claim details","rows":[{"pre":"Policy number: ","ans":"IP899021","post":"","type":"CODE"},{"pre":"Claim amount: $","ans":"980","post":" (not $1080)","type":"MONEY"},{"pre":"Incident date: ","ans":"9 September","post":"","type":"DIGIT"},{"pre":"Item: ","ans":"laptop","post":"","type":"WORD"},{"pre":"Receipt total: $","ans":"1490","post":"","type":"MONEY"},{"pre":"Decision in: ","ans":"14","post":" days","type":"DIGIT"},{"pre":"Phone: ","ans":"0800 809 911","post":"","type":"CODE"}]}]}
+
+];
+/* ================= 判分 ================= */
+const monthNum = {january:1,february:2,march:3,april:4,may:5,june:6,july:7,august:8,september:9,october:10,november:11,december:12};
+function normDate(s){
+  s = s.trim().toLowerCase().replace(/(\d+)(st|nd|rd|th)/g,"$1");
+  let m = s.match(/^(\d{1,2})[/.-](\d{1,2})(?:[/.-](\d{2,4}))?$/);
+  if(m){ let d=+m[1], mo=+m[2], y=m[3]?+m[3]:0; if(y<100)y+=2000; return {y,mo,d}; }
+  m = s.match(/^(\d{1,2})\s+([a-z]+)(?:,?\s+(\d{2,4}))?$/);
+  if(m && monthNum[m[2]]){ let d=+m[1], mo=monthNum[m[2]], y=m[3]?+m[3]:0; if(y<100)y+=2000; return {y,mo,d}; }
+  m = s.match(/^([a-z]+)(?:\s+(\d{1,2}))?(?:,?\s+(\d{2,4}))?$/);
+  if(m && monthNum[m[1]]){ let mo=monthNum[m[1]], d=m[2]?+m[2]:0, y=m[3]?+m[3]:0; if(y<100)y+=2000; return {y,mo,d}; }
+  return null;
+}
+function cmpDate(a,b){ return a.mo===b.mo && a.d===b.d && (!b.y || !a.y || a.y===b.y); }
+function normMoney(s){
+  s = s.trim().replace(/\s+/g,"");
+  let m = s.match(/^([$£€])(\d+(?:\.\d{1,2})?)$/);
+  if(!m) return null;
+  return {cur:m[1], val:parseFloat(m[2])};
+}
+function check(input, ans, type){
+  let v = input.trim();
+  if(!v) return false;
+  switch(type){
+    case "DIGIT": case "YEAR":
+      v = v.replace(/[^\d]/g,""); return v === ans;
+    case "TIME": {
+      let m = v.match(/^(\d{1,2}):(\d{2})$/); if(!m) return false;
+      return m[1].replace(/^0/,"") + ":" + m[2] === ans;
+    }
+    case "DATE": { let a = normDate(ans), b = normDate(v); return !!(a && b && cmpDate(a,b)); }
+    case "MONEY": { let a = normMoney(ans), b = normMoney(v); return !!(a && b && a.cur===b.cur && Math.abs(a.val-b.val)<1e-6); }
+    case "CODE": {
+      let cv = v.toLowerCase().replace(/[^a-z0-9]/g,""), ca = ans.toLowerCase().replace(/[^a-z0-9]/g,"");
+      return cv === ca;
+    }
+    case "FRAC": { let a = fracVal(ans), b = fracVal(v); return !!(a!==null && b!==null && Math.abs(a-b)<1e-6); }
+    case "WORD": return v.toLowerCase().replace(/\s+/g," ") === ans.toLowerCase().replace(/\s+/g," ");
+  }
+  return false;
+}
+function fracVal(s){
+  s = s.trim().toLowerCase();
+  if(s==="½"||s==="1/2"||s==="0.5"||s==="a half"||s==="half") return 0.5;
+  if(s==="¼"||s==="0.25") return 0.25;
+  if(s==="¾"||s==="0.75") return 0.75;
+  let m = s.match(/^(\d+)\s*\/\s*(\d+)$/); if(m){ let d=+m[2]; return d? (+m[1])/d : null; }
+  let mx = s.match(/^(\d+)\s+(\d+)\/(\d+)$/); if(mx){ let d=+mx[3]; return d? (+mx[1]) + (+mx[2])/d : null; }
+  let f = parseFloat(s); return isNaN(f)? null : f;
+}
+
+/* ================= 错题本（localStorage 持久化） ================= */
+let errs = [];
+try{ errs = JSON.parse(localStorage.getItem("ielts_errs")||"[]")||[]; }catch(e){ errs=[]; }
+function saveErrs(){ try{ localStorage.setItem("ielts_errs", JSON.stringify(errs)); }catch(e){} }
+function addErr(meta, audio, ans, type, user){
+  errs.push({meta, audio, ans, type, user});
+  saveErrs();
+  renderHome();
+}
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+/* ================= 播放（浮层播放条：可拖动进度 / 调速） ================= */
+let curAudio = null, curSrc = null, barTimer = null;
+function play(src){
+  if(curAudio){ curAudio.pause(); }
+  let a = new Audio("audio/"+src);
+  curAudio = a; curSrc = src;
+  let spd = parseFloat(document.getElementById("spdSel").value) || 1;
+  a.playbackRate = spd;
+  document.getElementById("playbar").classList.remove("hidden");
+  document.getElementById("pbToggle").textContent = "⏸";
+  document.getElementById("pbTime").textContent = "0:00 / 0:00";
+  document.getElementById("pbSeek").value = 0;
+  document.getElementById("pbName").textContent = src;
+  a.addEventListener("loadedmetadata", ()=>{
+    document.getElementById("pbTime").textContent = "0:00 / " + fmtT(a.duration);
+  });
+  a.addEventListener("timeupdate", ()=>{
+    if(!dragSeeking){
+      let d = a.duration || 1;
+      document.getElementById("pbSeek").value = Math.round(a.currentTime/d*1000);
+      document.getElementById("pbTime").textContent = fmtT(a.currentTime) + " / " + fmtT(a.duration);
+    }
+  });
+  a.addEventListener("ended", ()=>{
+    document.getElementById("pbToggle").textContent = "▶";
+    document.getElementById("pbSeek").value = 1000;
+  });
+  a.addEventListener("error", ()=>{
+    document.getElementById("pbToggle").textContent = "▶";
+    document.getElementById("pbName").textContent = "⚠ 音频缺失或无法播放：" + src;
+  });
+  a.play();
+  if(barTimer) clearTimeout(barTimer);
+}
+function fmtT(t){
+  if(!isFinite(t)) return "0:00";
+  let m = Math.floor(t/60), s = Math.floor(t%60);
+  return m + ":" + String(s).padStart(2,"0");
+}
+let dragSeeking = false;
+function seekTo(v){
+  if(!curAudio) return;
+  let d = curAudio.duration || 1;
+  curAudio.currentTime = v/1000*d;
+}
+function togglePb(){
+  if(!curAudio) return;
+  if(curAudio.paused){ curAudio.play(); document.getElementById("pbToggle").textContent = "⏸"; }
+  else{ curAudio.pause(); document.getElementById("pbToggle").textContent = "▶"; }
+}
+function setSpd(v){
+  if(curAudio) curAudio.playbackRate = parseFloat(v) || 1;
+}
+function closePb(){
+  if(curAudio) curAudio.pause();
+  document.getElementById("playbar").classList.add("hidden");
+}
+
+/* ================= 视图切换 ================= */
+function go(view){
+  ["v-home","v-rules","v-drill","v-type","v-sent","v-dlgs","v-dlg","v-errs"].forEach(id=>{
+    document.getElementById(id).classList.add("hidden");
+  });
+  document.getElementById(view).classList.remove("hidden");
+  window.scrollTo(0,0);
+}
+function crumb(parts){
+  document.getElementById("crumb").innerHTML =
+    parts.map((p,i)=> i<parts.length-1 ? `<a onclick="go('${p.v}')">${p.t}</a><span class="sep">/</span>` : `<span>${p.t}</span>`).join("");
+}
+
+/* ================= 首页 ================= */
+function renderHome(){
+  document.getElementById("modGrid").innerHTML = [
+    {ico:"📘", t:"规则速查", p:"6 张卡 · 年份/时刻/日期/金钱/号码/辨音", v:"v-rules", n:"6 卡"},
+    {ico:"🔢", t:"单数字练习", p:"7 种类型 · 随机抽 8 题机打", v:"v-drill", n:"7 组 · 84 题"},
+    {ico:"🗣️", t:"句子实战", p:"医院/学校/车站等 210 句 · 随机抽 10 句", v:"v-sent", n:"210 句", act:"renderSentList()"},
+    {ico:"💬", t:"对话实战", p:"仿雅思 Section 1 · 56 段 · 随机抽 2 段", v:"v-dlgs", n:"56 段"},
+    {ico:"📝", t:"错题本", p:"答错自动收录 · 重听重练", v:"v-errs", n: errs.length+" 题"}
+  ].map(m=>`<div class="mod" onclick="${m.act||('go(\''+m.v+'\')')}"><div class="ico">${m.ico}</div><h3>${m.t}</h3><p>${m.p}</p><div class="num">${m.n}</div></div>`).join("");
+}
+
+/* ================= 规则速查 ================= */
+function renderRules(){
+  let el = document.getElementById("ruleCards");
+  el.innerHTML = RULES.map((r,ri)=>{
+    let pts = r.pts.map(p=>`<li>${esc(p[0])} <span class="src">【<b>${p[1]}</b>】</span></li>`).join("");
+    let smp = r.samples.map(s=>`<div class="srow"><button class="btn play" onclick="play('${s[2]}')">▶</button><span><b>${esc(s[0])}</b> · ${esc(s[1])}</span></div>`).join("");
+    let tip = r.tips.map(t=>`<div>💡 ${esc(t[0])} <span class="src">【<b>${t[1]}</b>】</span></div>`).join("");
+    return `<div class="rcard" id="rcard_${ri}" onclick="toggleRule(${ri})"><div class="head"><h4>${esc(r.t)}</h4><span class="tag">${esc(r.tag)}</span><span class="arr">▶</span></div><div class="body"><ul>${pts}</ul><div class="samples">${smp}</div><div class="tips">${tip}</div></div></div>`;
+  }).join("");
+}
+function toggleRule(i){
+  let c = document.getElementById("rcard_"+i);
+  c.classList.toggle("open");
+}
+
+/* ================= 类型方块 ================= */
+function renderTiles(){
+  document.getElementById("drillTiles").innerHTML = GROUPS.map((g,i)=>
+    `<div class="tile" onclick="startType(${i})"><h4>${esc(g.t)}</h4><span>${esc(g.d)}</span><div class="badge">题库 ${g.q.length} 题 · 随机抽 10</div></div>`).join("");
+}
+
+/* ================= 机打练习 ================= */
+let typeState = null;
+function shuffle(arr){ let a=arr.slice(); for(let i=a.length-1;i>0;i--){ let j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function startType(gi){
+  typeState = { group: GROUPS[gi], list: shuffle(GROUPS[gi].q).slice(0,10), idx:0, right:0, results:[] };
+  crumb([{t:"数字复习",v:"v-home"},{t:"单数字练习",v:"v-drill"},{t:GROUPS[gi].t,v:"v-type"}]);
+  go("v-type");
+  renderTypeQ();
+}
+function renderTypeQ(){
+  let s = typeState;
+  if(s.idx >= s.list.length){ renderTypeResult(); return; }
+  let q = s.list[s.idx];
+  let card = document.getElementById("typeCard");
+  card.innerHTML = `
+    <div class="kind">${esc(s.group.t)} · 第 ${s.idx+1} / ${s.list.length} 题</div>
+    <div class="stat"><span>已答对 ${s.right} 题</span><span>${s.idx+1}/${s.list.length}</span></div>
+    <div class="progbar"><i style="width:${s.idx/s.list.length*100}%"></i></div>
+    <button class="btn big" onclick="play('${q[0]}')">🔊</button>
+    <div class="listen-tip">听录音，在下方输入数字</div>
+    <input class="answer-in" id="typeIn" autocomplete="off" placeholder="输入答案" onkeydown="if(event.key==='Enter')submitType()">
+    <div class="hint">输入正确自动进入下一题 · 回车提交判错</div>`;
+  document.getElementById("typeIn").focus();
+}
+function submitType(){
+  let s = typeState, q = s.list[s.idx], input = document.getElementById("typeIn");
+  let v = input.value, ok = check(v, q[1], q[2]);
+  if(ok){
+    s.right++; s.results.push({ok:true, ans:q[1]});
+    input.classList.add("ok"); input.disabled = true;
+    setTimeout(()=>{ s.idx++; renderTypeQ(); }, 650);
+  }else{
+    input.classList.add("no"); input.disabled = true;
+    s.results.push({ok:false, ans:q[1], user:v});
+    addErr(`${s.group.t} · 机打`, q[0], q[1], q[2], v);
+    let hint = document.querySelector(".typecard .hint");
+    if(hint) hint.innerHTML = `<span style="color:var(--err)">正确答案：${esc(q[1])}</span>`;
+    setTimeout(()=>{ s.idx++; renderTypeQ(); }, 1600);
+  }
+}
+function renderTypeResult(){
+  let s = typeState;
+  document.getElementById("typeCard").innerHTML = `
+    <div class="result">
+      <div class="big">${s.right}/${s.list.length}</div>
+      <div class="cap">${s.group.t} · 本轮答对率</div>
+      <button class="btn primary" onclick="startType(${GROUPS.findIndex(g=>g.id===s.group.id)})">再练一轮</button>
+      <button class="btn ghost" style="margin-left:8px" onclick="go('v-drill')">返回类型选择</button>
+    </div>`;
+}
+
+/* ================= 句子实战 ================= */
+let sentState = null;
+function renderSentList(){
+  crumb([{t:"数字复习",v:"v-home"},{t:"句子实战",v:"v-sent"}]);
+  go("v-sent");
+  let demo = SENTS.find(x=>x.audio==="num_s11.mp3");
+  let demoHtml = demo.base.replace(/\{\{(\d+)\}\}/g,(m,n)=>{
+    let b = demo.blanks[+n-1];
+    return `<b style="color:var(--err)">${esc(b[0])}</b><span style="color:#8a97a8;font-size:12px"> (${b[1]})</span>`;
+  });
+  let demos = [demo].concat(SENTS.filter(x=>["num_s01.mp3","num_s02.mp3","num_s03.mp3","num_s04.mp3","num_s05.mp3","num_s06.mp3","num_s07.mp3","num_s08.mp3","num_s09.mp3","num_s10.mp3"].includes(x.audio)));
+  document.getElementById("sentDemo").innerHTML = `
+    <div class="prompt" style="margin-top:4px">Complete the sentence below. Write ONE WORD AND/OR A NUMBER for each answer.</div>
+    <div class="notepad" style="margin-bottom:6px">
+      <div class="ghead">试听样例（已有音频 · 点击 ▶ 听，对照题目）</div>
+      ${demos.map((d,i)=>{
+        let t = d.base.replace(/\{\{(\d+)\}\}/g,(m,n)=>{ let b=d.blanks[+n-1]; return `<b style="color:var(--err)">${esc(b[0])}</b><span style="color:#8a97a8;font-size:12px">(${b[1]})</span>`; });
+        return `<div class="crow"><button class="btn play" onclick="play('${d.audio}')">▶</button><span class="scene" style="width:52px">${esc(d.scene)}</span><span>${t}</span></div>`;
+      }).join("")}
+    </div>
+    <button class="btn primary" onclick="startSents()">▶ 开始随机练习（210 句抽 10）</button>`;
+  document.getElementById("sentCard").innerHTML = "";
+}
+function startSents(){
+  let picks = shuffle(SENTS).slice(0,10).map(s=>({scene:s.scene, base:s.base, blanks:s.blanks, audio:s.audio}));
+  sentState = { list: picks, idx:0, right:0, done:0 };
+  crumb([{t:"数字复习",v:"v-home"},{t:"句子实战",v:"v-sent"}]);
+  go("v-sent");
+  renderSentQ();
+}
+function renderSentQ(){
+  let s = sentState;
+  if(s.idx >= s.list.length){ renderSentResult(); return; }
+  let it = s.list[s.idx];
+  let html = it.base.replace(/\{\{(\d+)\}\}/g,(m,n)=>{
+    let b = it.blanks[+n-1];
+    return `<input class="blank-in" id="sb_${n}" placeholder="空${n}" autocomplete="off" data-ans="${esc(b[0])}" data-type="${b[1]}" onkeydown="if(event.key==='Enter')submitSent()">`;
+  });
+  document.getElementById("sentCard").innerHTML = `
+    <div class="prompt">Complete the sentence below. Write ONE WORD AND/OR A NUMBER for each answer.</div>
+    <div class="scene">${esc(it.scene)} · 第 ${s.idx+1} / ${s.list.length} 句</div>
+    <div class="stat"><span>已答对 ${s.right} / ${s.done} 空</span><span>${s.idx+1}/${s.list.length}</span></div>
+    <div class="progbar"><i style="width:${s.idx/s.list.length*100}%"></i></div>
+    <button class="btn big" onclick="play('${it.audio}')">🔊</button>
+    <div class="sent-text">${html}</div>
+    <div class="hint">听整句 → 填所有空 → 回车检查（错题自动进错题本）</div>`;
+}
+function submitSent(){
+  let s = sentState, it = s.list[s.idx];
+  let all = true;
+  it.blanks.forEach((b,bi)=>{
+    let input = document.getElementById(`sb_${bi+1}`);
+    let v = input.value;
+    if(check(v, b[0], b[1])){ s.right++; input.classList.add("ok"); input.disabled=true; }
+    else{ all=false; input.classList.add("no"); input.disabled=true; addErr(`句子 · ${it.scene}`, it.audio, b[0], b[1], v); }
+  });
+  s.done += it.blanks.length;
+  let hint = document.querySelector(".sentcard .hint");
+  if(!all){
+    let wrong = it.blanks.filter((b,bi)=>{ let inp=document.getElementById(`sb_${bi+1}`); return inp.classList.contains("no"); })
+      .map(b=>esc(b[0])).join(" / ");
+    hint.innerHTML = `<span style="color:var(--err)">正确答案：${wrong}</span>`;
+  }else{
+    hint.innerHTML = `<span style="color:var(--ok)">✓ 全对！</span>`;
+  }
+  setTimeout(()=>{ s.idx++; renderSentQ(); }, 1500);
+}
+function renderSentResult(){
+  let s = sentState;
+  document.getElementById("sentCard").innerHTML = `
+    <div class="result">
+      <div class="big">${s.right}/${s.done}</div>
+      <div class="cap">句子实战 · 本轮填空答对率</div>
+      <button class="btn primary" onclick="startSents()">再来一轮</button>
+      <button class="btn ghost" style="margin-left:8px" onclick="go('v-home')">返回首页</button>
+    </div>`;
+}
+
+/* ================= 对话 ================= */
+let dlgState = null;
+let dlgPick = [];
+function renderDlgs(){
+  dlgPick = shuffle(DLGS.slice()).slice(0,2);
+  document.getElementById("dlgList").innerHTML = dlgPick.map((d,di)=>{
+    let n = d.groups.reduce((a,g)=>a+g.rows.length,0);
+    return `<div class="rcard" onclick="startDlg(${di})"><div class="head"><h4>${esc(d.t)}</h4><span class="tag">${n} 空</span><span class="arr">▶</span></div><div class="sub">${esc(d.scene)}</div></div>`;
+  }).join("") + `<button class="btn ghost" style="margin-top:14px;width:100%" onclick="renderDlgs()">🎲 换一批 · 再抽 2 段</button>`;
+}
+function startDlg(di){
+  let d = dlgPick[di];
+  dlgState = { dlg: d, right:0, done:0, finished:false };
+  crumb([{t:"数字复习",v:"v-home"},{t:"对话实战",v:"v-dlgs"},{t:d.t,v:"v-dlg"}]);
+  go("v-dlg");
+  renderDlgQ();
+}
+function renderDlgQ(){
+  let s = dlgState, d = s.dlg, gi = 0;
+  let html = d.groups.map(g=>{
+    let rows = g.rows.map(r=>{
+      let inp = `<input class="blank-in" id="db_${gi}" style="width:110px" data-ans="${esc(r.ans)}" data-type="${r.type}" onkeydown="if(event.key==='Enter')submitDlg()">`;
+      gi++;
+      return `<div class="crow"><span>${esc(r.pre||"")}</span>${inp}<span>${esc(r.post||"")}</span></div>`;
+    }).join("");
+    return `<div class="ghead">${esc(g.h)}</div>${rows}`;
+  }).join("");
+  let ex = d.example ? `<div class="example"><span class="exlbl">Example</span>${esc(d.example.pre)}<b>${esc(d.example.ans)}</b>${esc(d.example.post)}</div>` : "";
+  document.getElementById("dlgCard").innerHTML = `
+    <h4>${esc(d.t)}</h4>
+    <div class="prompt">${esc(d.prompt)}</div>
+    <div style="margin-bottom:14px"><button class="btn play" onclick="play('${d.audio}')">▶ 播放整段对话</button><span class="scene">${esc(d.scene)}</span></div>
+    <div class="notepad">${ex}${html}</div>
+    <div style="margin-top:12px"><button class="btn primary" onclick="submitDlg()">检查全部</button> <span class="fb" id="dlgfb"></span></div>`;
+}
+function submitDlg(){
+  let s = dlgState, d = s.dlg, all = true, msgs = [];
+  let blanks = [];
+  d.groups.forEach(g=>g.rows.forEach(r=>blanks.push(r)));
+  blanks.forEach((b,bi)=>{
+    let input = document.getElementById(`db_${bi}`);
+    let v = input.value;
+    if(check(v, b.ans, b.type)){ input.classList.add("ok"); }
+    else{ all=false; input.classList.add("no"); msgs.push(`空${bi+1}: ${b.ans}`); addErr(`对话 · ${d.t} · 空${bi+1}`, d.audio, b.ans, b.type, v); }
+  });
+  s.right = blanks.filter((b,bi)=>document.getElementById(`db_${bi}`).classList.contains("ok")).length;
+  s.done = blanks.length;
+  let fb = document.getElementById("dlgfb");
+  if(all){ fb.innerHTML = '<span style="color:var(--ok)">✓ 整段全对！</span>'; }
+  else{ fb.innerHTML = '<span style="color:var(--err)">✗ 有错误：' + msgs.join("，") + '</span>'; }
+  if(!s.finished){
+    s.finished = true;
+    setTimeout(()=>{
+      document.getElementById("dlgCard").innerHTML = `
+        <div class="result">
+          <div class="big">${s.right}/${s.done}</div>
+          <div class="cap">${esc(d.t)} · 填空答对率</div>
+          <button class="btn primary" onclick="startDlg(${DLGS.findIndex(x=>x===d)})">再听一遍</button>
+          <button class="btn ghost" style="margin-left:8px" onclick="go('v-dlgs')">返回对话列表</button>
+        </div>`;
+    }, 2200);
+  }
+}
+
+/* ================= 错题本 ================= */
+function renderErrs(){
+  let el = document.getElementById("errList");
+  if(!errs.length){ el.innerHTML = '<div class="empty">暂无错题，继续加油！</div>'; return; }
+  el.innerHTML = errs.map((e,i)=>
+    `<div class="e"><button class="btn play" onclick="play('${e.audio}')">▶</button><span>${esc(e.meta)}</span><span>你答：<span class="bad">${esc(e.user)||"—"}</span></span><span>答案：<span class="ans">${esc(e.ans)}</span></span><button class="btn ghost" onclick="rmErr(${i})">移除</button></div>`).join("");
+}
+function rmErr(i){ errs.splice(i,1); saveErrs(); renderErrs(); renderHome(); }
+
+/* ================= 初始化 ================= */
+renderHome(); renderRules(); renderTiles(); renderDlgs();
+</script>
+<!-- 播放条浮层 -->
+<div id="playbar" class="hidden">
+  <div class="pbinner">
+    <button id="pbToggle" class="btn play" onclick="togglePb()">⏸</button>
+    <span id="pbName" class="pbname"></span>
+    <input type="range" id="pbSeek" min="0" max="1000" value="0"
+      oninput="dragSeeking=true; document.getElementById('pbTime').textContent=fmtT(curAudio&&curAudio.duration? (this.value/1000*curAudio.duration):0)+' / '+fmtT(curAudio?curAudio.duration:0)"
+      onchange="dragSeeking=false; seekTo(this.value)">
+    <span id="pbTime">0:00 / 0:00</span>
+    <select id="spdSel" onchange="setSpd(this.value)" title="语速">
+      <option value="0.75">0.75×</option>
+      <option value="1">1×</option>
+      <option value="1.2" selected>1.2×</option>
+      <option value="1.25">1.25×</option>
+      <option value="1.5">1.5×</option>
+    </select>
+    <button class="btn ghost" onclick="closePb()" title="关闭">✕</button>
+  </div>
+</div>
+</body>
+</html>
