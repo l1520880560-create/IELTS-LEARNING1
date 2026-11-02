@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>阅读词汇串学 · 16 篇</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background: #faf7f2; color: #1a1a1a; min-height: 100vh; padding: 40px 20px 60px; }
+.wrap { max-width: 1060px; margin: 0 auto; }
+.top { text-align: center; margin-bottom: 10px; }
+.top a { color: #C00000; text-decoration: none; font-size: 13px; letter-spacing: 1px; }
+.title { font-size: 26px; font-weight: 700; text-align: center; letter-spacing: 1px; color: #1e3a1e; margin-bottom: 6px; }
+.sub { text-align: center; color: #7a5c2e; font-size: 14px; margin-bottom: 14px; letter-spacing: .5px; }
+.lead { max-width: 820px; margin: 0 auto 22px; background: #fffdf9; border: 1px solid #e8e0d2; border-radius: 12px; padding: 14px 20px; font-size: 13px; color: #555; line-height: 1.9; text-align: center; }
+.legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 22px; margin: 0 auto 30px; max-width: 900px; font-size: 12.5px; color: #444; }
+.legend .item { display: inline-flex; align-items: center; gap: 6px; }
+.dot { display: inline-block; width: 12px; height: 12px; border-radius: 3px; }
+.d-r { background: #d9534f; } .d-b { background: #337ab7; } .d-g { background: #1e7a3e; } .d-o { background: #e0862a; } .d-p { background: #7c4dbb; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+.card { background: #fff; border: 1px solid #e9e2d4; border-radius: 14px; padding: 20px 18px 16px; text-decoration: none; color: inherit; box-shadow: 0 1px 4px rgba(60,40,10,.05); transition: transform .14s, box-shadow .14s; display: block; }
+.card:hover { transform: translateY(-3px); box-shadow: 0 8px 22px rgba(60,40,10,.10); }
+.card .no { font-size: 11px; color: #b09668; letter-spacing: 1px; margin-bottom: 6px; font-weight: 600; }
+.card h2 { font-size: 16px; font-weight: 700; margin-bottom: 3px; color: #1e3a1e; }
+.card .en { font-size: 11px; color: #9a927f; margin-bottom: 8px; font-style: italic; }
+.card p { font-size: 12px; color: #666; line-height: 1.7; margin-bottom: 10px; }
+.card .tags { font-size: 11px; color: #b09668; line-height: 1.7; }
+.card .go { display: inline-block; margin-top: 10px; font-size: 12px; color: #C00000; font-weight: 600; }
+.foot { margin-top: 42px; text-align: center; font-size: 12px; color: #aaa; line-height: 2; border-top: 1px solid #eee5d6; padding-top: 16px; }
+.foot b { color: #7a5c2e; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="../index.html">← 返回备考中心首页</a></div>
+  <div class="title">雅思阅读词汇串学 · 16 篇</div>
+  <div class="sub">模拟刘洪波风格 · 考点词 / 核心词 / 同义替换编织进文章</div>
+  <div class="lead">每篇 8 段中英对照，正文中考点词、核心词、同义替换词、生僻难词与逻辑信号词分色标注；<b>A1 以上词汇均可划词</b>，点击任意带色词或下划线词查看 音标 · 本文义与常用义 · 朗文式英英释义 · 独立例句 · 同义词 · 词根词缀助记。</div>
+  <div class="legend">
+    <span class="item"><span class="dot d-r"></span>考点词（538 体系）</span>
+    <span class="item"><span class="dot d-b"></span>同义替换（789 / 羊驼）</span>
+    <span class="item"><span class="dot d-g"></span>核心词（词汇真经）</span>
+    <span class="item"><span class="dot d-o"></span>生僻难词（分类词汇）</span>
+    <span class="item"><span class="dot d-p"></span>逻辑信号词（定位）</span>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="foot">16 篇共覆盖核心词 <b>1700+</b> · 考点词 <b>800+</b> · 同义替换 <b>700+</b> 组<br>词汇依据：词汇真经（hefengxian.com）· 刘洪波 538 考点词 · 雅思阅读 789 同义词 · 羊驼同义替换<br>Made for IELTS / 公派留学 / 访学英语备考学习者 · 仅供教育学习</div>
+</div>
+<script>
+const ARTICLES = [
+  ["tulip.html","01","郁金香狂热","Tulip Mania","经济学 · 泡沫 · 投机心理","market; bubble; speculation; crisis"],
+  ["tea.html","02","茶叶简史","A Brief History of Tea","历史 · 科技 · 贸易","trade; cultivation; ceremony; export"],
+  ["cane.html","03","澳洲甘蔗蟾蜍","Australia's Cane Toad Problem","生态 · 物种入侵","invasive; predator; breed; ecosystem"],
+  ["carnivorous.html","04","食虫植物","Carnivorous Plants","植物学 · 适应进化","trap; prey; digest; adaptation"],
+  ["bioluminescence.html","05","深海发光生物","Fluorescence: Deep-Sea Discovery","海洋科学 · 生物发光","glow; organ; signal; species"],
+  ["giraffes.html","06","野生长颈鹿","New Understanding of Giraffes","动物行为 · 野外研究","neck; habitat; migration; behaviour"],
+  ["sleep.html","07","部落睡眠研究","Sleep Study on Hunter-Gatherers","生理 · 医学 · 人类学","cycle; daylight; pattern; wellbeing"],
+  ["plastics.html","08","塑料的发展史","The Development of Plastics","材料科技 · 工业史","synthetic; mould; polymer; waste"],
+  ["silk.html","09","丝绸产业史","The Development of the Silk Industry","历史 · 经济 · 工艺","sericulture; loom; luxury; route"],
+  ["spice.html","10","香料贸易","The Spice Trade","经济 · 航运 · 贸易","commodity; route; voyage; monopoly"],
+  ["water.html","11","城市供水","Water: The Urban Supply Puzzle","环境 · 水利工程","dam; sewage; irrigation; pipe"],
+  ["memory.html","12","记忆如何工作","How Memory Works","心理 · 认知科学","cognitive; retain; recall; encode"],
+  ["opera.html","13","悉尼歌剧院","The Sydney Opera House","建筑 · 工程","structure; design; architect; engineer"],
+  ["polar.html","14","极地探险","Polar Exploration","科学探索 · 极地","expedition; extreme; survival; harsh"],
+  ["fingerprint.html","15","指纹与法医学","Fingerprints & Forensic Science","法律 · 犯罪科学","forensic; identify; evidence; law"],
+  ["university.html","16","大学的演进","The Evolution of Universities","教育 · 历史","curriculum; faculty; grant; lecture"]
+];
+const grid = document.getElementById('grid');
+ARTICLES.forEach(function(a){
+  const card = document.createElement('a');
+  card.className = 'card';
+  card.href = a[0];
+  card.innerHTML = '<div class="no">' + a[1] + '</div><h2>' + a[2] + '</h2><div class="en">' + a[3] + '</div><p>' + a[4] + '</p><div class="tags">' + a[5] + '</div><span class="go">进入精读 →</span>';
+  grid.appendChild(card);
+});
+</script>
+</body>
+</html>
