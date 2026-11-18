@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学员登录 · IELTS 备考中心</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  background: #fbfcfe; color: #1a1a1a;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px; min-height: 100vh;
+}
+body::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(1000px 600px at 50% -20%, #ffffff 0%, rgba(255,255,255,0) 70%),
+    radial-gradient(700px 400px at 90% 110%, #f3f6fb 0%, rgba(243,246,251,0) 70%);
+}
+.box { position: relative; width: 100%; max-width: 380px; }
+.lock { width: 34px; height: 34px; margin: 0 auto 18px; display: block; opacity: .5; }
+.lock svg { width: 100%; height: 100%; }
+.brand { text-align: center; font-size: 26px; font-weight: 600; letter-spacing: .5px; margin-bottom: 8px; }
+.brand b { color: #C00000; font-weight: 700; }
+.sub { text-align: center; font-size: 12.5px; color: #8b94a3; letter-spacing: .6px; margin-bottom: 30px; }
+.card {
+  background: #fff; border: 1px solid #e8ecf2; border-radius: 14px;
+  padding: 28px 24px 24px; box-shadow: 0 2px 14px rgba(20,40,80,.06);
+}
+label { display: block; margin-bottom: 16px; }
+label span { display: block; font-size: 12.5px; color: #6b7484; margin-bottom: 7px; letter-spacing: .4px; }
+input {
+  width: 100%; font: inherit; font-size: 15px; color: #1a1a1a;
+  padding: 11px 12px; border: 1px solid #dde3ec; border-radius: 9px;
+  background: #fcfdfe; outline: none; transition: border-color .15s, box-shadow .15s;
+}
+input:focus { border-color: #c3cfe2; box-shadow: 0 0 0 3px rgba(60,90,150,.07); background: #fff; }
+button {
+  width: 100%; font: inherit; font-size: 15px; font-weight: 600; letter-spacing: 1px;
+  color: #fff; background: #1f2a3d; border: 0; border-radius: 9px;
+  padding: 12px 0; cursor: pointer; margin-top: 4px; transition: background .15s, transform .1s;
+}
+button:hover { background: #2b3852; }
+button:active { transform: translateY(1px); }
+button:disabled { opacity: .6; cursor: default; }
+.msg { min-height: 20px; margin-top: 14px; font-size: 12.5px; line-height: 1.6; color: #C00000; text-align: center; }
+.msg.ok { color: #1a7f4b; }
+.foot { margin-top: 22px; text-align: center; font-size: 11.5px; color: #a9b1bf; line-height: 1.9; }
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="lock">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#8b94a3" stroke-width="1.6" stroke-linecap="round">
+      <rect x="4.5" y="10.5" width="15" height="10" rx="2.6"></rect>
+      <path d="M8 10.5V7.2a4 4 0 0 1 8 0v3.3"></path>
+      <circle cx="12" cy="15.6" r="1.5" fill="#8b94a3" stroke="none"></circle>
+    </svg>
+  </div>
+  <div class="brand"><b>IELTS</b> 备考中心</div>
+  <div class="sub">学员登录 · STUDENT ACCESS</div>
+  <div class="card">
+    <form id="f" autocomplete="on">
+      <label>
+        <span>账号</span>
+        <input id="u" name="username" autocomplete="username" placeholder="例如 stu01" spellcheck="false">
+      </label>
+      <label>
+        <span>密码</span>
+        <input id="p" name="password" type="password" autocomplete="current-password" placeholder="8 位字母与数字">
+      </label>
+      <button id="go" type="submit">进入备考中心</button>
+    </form>
+    <div class="msg" id="msg"></div>
+  </div>
+  <div class="foot">账号由老师统一发放，请勿转借他人<br>登录一次后同一台设备 30 天内免重复输入</div>
+</div>
+<script src="auth.js" data-guard="0"></script>
+<script>
+(function () {
+  var A = window.IELTS || {};
+  var acc = A.acc || {}, salt = A.salt || "", key = A.key || "ielts_session_v1", ttl = A.ttl || 30 * 86400000;
+  var f = document.getElementById("f"),
+      iu = document.getElementById("u"),
+      ip = document.getElementById("p"),
+      msg = document.getElementById("msg"),
+      go = document.getElementById("go");
+
+  function say(t, ok) {
+    msg.textContent = t;
+    msg.className = "msg" + (ok ? " ok" : "");
+  }
+
+  function target() {
+    var n = "";
+    try { n = new URLSearchParams(location.search).get("next") || ""; } catch (e) {}
+    // 只接受站内绝对路径，避免被用作跳转跳板
+    if (n.charAt(0) === "/" && n.indexOf("//") < 0) return n;
+    return "index.html";
+  }
+
+  f.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var u = (iu.value || "").trim().toLowerCase();
+    var p = (ip.value || "").trim();
+    if (!u || !p) { say("请填写账号和密码"); return; }
+    if (!acc[u]) { say("账号或密码不正确，请核对老师发你的信息"); ip.select(); return; }
+    var h = A.sha ? A.sha(salt + "|" + u + "|" + p) : "";
+    if (h !== acc[u]) { say("账号或密码不正确，请核对老师发你的信息"); ip.select(); return; }
+
+    go.disabled = true;
+    say("验证通过，正在进入…", true);
+    try {
+      localStorage.setItem(key, JSON.stringify({ u: u, k: h, t: Date.now() }));
+    } catch (err) {
+      say("浏览器未允许本地存储，请关闭无痕模式后重试");
+      go.disabled = false;
+      return;
+    }
+    setTimeout(function () { location.replace(target()); }, 260);
+  });
+
+  iu.focus();
+})();
+</script>
+</body>
+</html>
